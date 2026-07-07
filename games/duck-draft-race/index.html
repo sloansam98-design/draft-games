@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duck Race — Draft Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="../../index.html" class="site-nav-link">← Draft Games</a>
+  </nav>
+
+  <div class="sky">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <header class="header">
+    <div class="logo">🦆</div>
+    <div>
+      <h1>Duck Race</h1>
+      <p class="tagline">Let the ducks decide your fantasy football draft order</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="setup-panel" class="panel setup-panel">
+      <h2>Enter Your Teams</h2>
+      <p class="hint">Add at least 2 fantasy football team names. Each team gets a duck in the race!</p>
+
+      <div id="team-list" class="team-list"></div>
+
+      <div class="team-list-actions">
+        <button type="button" id="randomize-order-btn" class="btn btn-ghost" disabled>
+          🔀 Randomize Order
+        </button>
+      </div>
+
+      <div class="import-section">
+        <label class="import-label">Import League Teams</label>
+        <p class="hint hint-compact">Pull team names from Sleeper, ESPN, or Yahoo.</p>
+
+        <div class="import-tabs" role="tablist" aria-label="League import platforms">
+          <button type="button" class="import-tab active" data-platform="sleeper">Sleeper</button>
+          <button type="button" class="import-tab" data-platform="espn">ESPN</button>
+          <button type="button" class="import-tab" data-platform="yahoo">Yahoo</button>
+        </div>
+
+        <div class="import-panel active" data-platform-panel="sleeper">
+          <div class="import-row">
+            <input type="text" id="sleeper-username" placeholder="Sleeper username" maxlength="50" autocomplete="off">
+            <input type="text" id="sleeper-league" placeholder="League name or ID" maxlength="80" autocomplete="off">
+            <button type="button" id="sleeper-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+
+        <div class="import-panel" data-platform-panel="espn">
+          <div class="import-row">
+            <input type="text" id="espn-league" placeholder="ESPN league ID or URL" maxlength="120" autocomplete="off">
+            <input type="text" id="espn-season" placeholder="Season (optional)" maxlength="4" autocomplete="off">
+            <button type="button" id="espn-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+          <p class="import-note">Public ESPN leagues work best. Private leagues must be set to public in ESPN league settings.</p>
+        </div>
+
+        <div class="import-panel" data-platform-panel="yahoo">
+          <div class="import-row import-row-single">
+            <input type="text" id="yahoo-league" placeholder="Yahoo league URL or ID (optional)" maxlength="120" autocomplete="off">
+          </div>
+          <textarea id="yahoo-teams" rows="4" placeholder="Paste Yahoo team names here, one per line"></textarea>
+          <div class="import-row import-row-single">
+            <button type="button" id="yahoo-import-btn" class="btn btn-secondary">Import Yahoo Teams</button>
+          </div>
+          <p class="import-note">Yahoo needs a quick roster paste because their API requires Yahoo sign-in.</p>
+        </div>
+      </div>
+
+      <div class="add-team-row">
+        <input
+          type="text"
+          id="team-input"
+          placeholder="e.g. Mahomes Alone"
+          maxlength="40"
+          autocomplete="off"
+        >
+        <button type="button" id="add-team-btn" class="btn btn-secondary">Add Team</button>
+      </div>
+
+      <div class="duration-section">
+        <label class="duration-label">Race Duration</label>
+        <div class="duration-options" role="radiogroup" aria-label="Race duration">
+          <button type="button" class="duration-btn" data-duration="15">15 sec</button>
+          <button type="button" class="duration-btn active" data-duration="30">30 sec</button>
+          <button type="button" class="duration-btn" data-duration="45">45 sec</button>
+          <button type="button" class="duration-btn" data-duration="60">1 min</button>
+        </div>
+      </div>
+
+      <div class="setup-actions">
+        <button type="button" id="sample-teams-btn" class="btn btn-ghost">Load Sample Teams</button>
+        <button type="button" id="start-race-btn" class="btn btn-primary" disabled>
+          Start the Race! 🏁
+        </button>
+      </div>
+    </section>
+
+    <section id="race-panel" class="panel race-panel hidden">
+      <div class="race-header">
+        <div class="race-header-top">
+          <h2>The Race Is On!</h2>
+          <div id="race-timer" class="race-timer">0:30</div>
+        </div>
+        <p id="race-status" class="race-status">Ducks are paddling for draft glory...</p>
+      </div>
+
+      <div class="race-track-wrapper">
+        <div id="race-track" class="race-scene"></div>
+      </div>
+
+      <div id="live-positions" class="live-positions hidden"></div>
+      <div id="live-standings" class="live-standings"></div>
+    </section>
+
+    <section id="results-panel" class="panel results-panel hidden">
+      <div class="results-header">
+        <h2>🏆 Draft Order</h2>
+        <p>Your official fantasy football draft order, determined by duck athleticism</p>
+      </div>
+
+      <ol id="draft-order" class="draft-order"></ol>
+
+      <div class="results-actions">
+        <button type="button" id="copy-order-btn" class="btn btn-secondary">Copy Draft Order</button>
+        <button type="button" id="race-again-btn" class="btn btn-primary">Race Again</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>May the fastest duck win the first pick. Good luck this season!</p>
+  </footer>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="sprites.js"></script>
+  <script src="sleeper.js"></script>
+  <script src="espn.js"></script>
+  <script src="yahoo.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coin Flip Showdown — Draft Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="../../index.html" class="site-nav-link">← Draft Games</a>
+  </nav>
+
+  <div class="arena-bg" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="logo">🪙</div>
+    <div>
+      <h1>Coin Flip Showdown</h1>
+      <p class="tagline">Heads or tails. Winner advances. Last team standing takes #1.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="setup-panel" class="panel">
+      <h2>Enter Your Teams</h2>
+      <p class="hint">Add at least 2 teams. Win the main bracket for #1 — losers flip again in a losers bracket to settle their picks.</p>
+
+      <div id="team-list" class="team-list"></div>
+
+      <div class="team-list-actions">
+        <button type="button" id="randomize-order-btn" class="btn btn-ghost" disabled>🔀 Randomize Seeds</button>
+      </div>
+
+      <div class="import-section">
+        <span class="import-label">Import League Teams</span>
+        <div class="import-tabs" role="tablist">
+          <button type="button" class="import-tab active" data-platform="sleeper">Sleeper</button>
+          <button type="button" class="import-tab" data-platform="espn">ESPN</button>
+          <button type="button" class="import-tab" data-platform="yahoo">Yahoo</button>
+        </div>
+        <div class="import-panel active" data-platform-panel="sleeper">
+          <div class="import-row">
+            <input type="text" id="sleeper-username" placeholder="Sleeper username" autocomplete="off">
+            <input type="text" id="sleeper-league" placeholder="League name or ID" autocomplete="off">
+            <button type="button" id="sleeper-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+        <div class="import-panel" data-platform-panel="espn">
+          <div class="import-row">
+            <input type="text" id="espn-league" placeholder="ESPN league ID or URL" autocomplete="off">
+            <input type="text" id="espn-season" placeholder="Season (optional)" autocomplete="off">
+            <button type="button" id="espn-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+        <div class="import-panel" data-platform-panel="yahoo">
+          <textarea id="yahoo-teams" rows="3" placeholder="Paste Yahoo team names, one per line"></textarea>
+          <button type="button" id="yahoo-import-btn" class="btn btn-secondary">Import Yahoo Teams</button>
+        </div>
+      </div>
+
+      <div class="add-team-row">
+        <input type="text" id="team-input" placeholder="e.g. Mahomes Alone" maxlength="40" autocomplete="off">
+        <button type="button" id="add-team-btn" class="btn btn-secondary">Add Team</button>
+      </div>
+
+      <div class="setup-actions">
+        <button type="button" id="sample-teams-btn" class="btn btn-ghost">Load Sample Teams</button>
+        <button type="button" id="start-bracket-btn" class="btn btn-primary" disabled>Start Showdown! 🪙</button>
+      </div>
+    </section>
+
+    <section id="arena-panel" class="panel hidden">
+      <div class="arena-layout">
+        <div class="arena-main">
+          <p id="round-label" class="round-label">Round 1</p>
+          <p id="matchup-label" class="matchup-label">Matchup 1 of 4</p>
+
+          <div class="showdown-stage">
+            <div id="team-a-card" class="team-card team-card--a">
+              <span class="team-card-side">Heads</span>
+              <span class="team-card-name" id="team-a-name">—</span>
+            </div>
+
+            <div class="coin-stage">
+              <div id="coin" class="coin" aria-hidden="true">
+                <div class="coin-face coin-heads">🏈</div>
+                <div class="coin-face coin-tails">🪙</div>
+              </div>
+              <p id="coin-result" class="coin-result hidden"></p>
+            </div>
+
+            <div id="team-b-card" class="team-card team-card--b">
+              <span class="team-card-side">Tails</span>
+              <span class="team-card-name" id="team-b-name">—</span>
+            </div>
+          </div>
+
+          <button type="button" id="flip-btn" class="btn btn-flip">FLIP!</button>
+          <p id="winner-callout" class="winner-callout hidden"></p>
+        </div>
+
+        <aside class="bracket-sidebar">
+          <h3>Bracket</h3>
+          <div id="bracket-view" class="bracket-view"></div>
+          <h3 class="sidebar-divider">Draft Order</h3>
+          <ol id="live-draft-order" class="live-draft-order"></ol>
+        </aside>
+      </div>
+    </section>
+
+    <section id="results-panel" class="panel hidden">
+      <h2>🏆 Final Draft Order</h2>
+      <p class="hint">Champion claims #1. Every flip shaped the rest.</p>
+      <ol id="final-draft-order" class="final-draft-order"></ol>
+      <div class="results-actions">
+        <button type="button" id="copy-order-btn" class="btn btn-secondary">Copy Draft Order</button>
+        <button type="button" id="flip-again-btn" class="btn btn-primary">Flip Again</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="sleeper.js"></script>
+  <script src="espn.js"></script>
+  <script src="yahoo.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

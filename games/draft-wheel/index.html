@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draft Wheel — Draft Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="../../index.html" class="site-nav-link">← Draft Games</a>
+  </nav>
+
+  <div class="spotlight-bg" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="logo">🎡</div>
+    <div>
+      <h1>Draft Wheel</h1>
+      <p class="tagline">Spin the wheel. Claim your pick. No takesies backsies.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- SETUP -->
+    <section id="setup-panel" class="panel">
+      <h2>Enter Your Teams</h2>
+      <p class="hint" id="setup-hint">Add at least 2 teams. Each spin assigns the next draft slot.</p>
+
+      <div id="team-list" class="team-list"></div>
+
+      <div class="team-list-actions">
+        <button type="button" id="randomize-order-btn" class="btn btn-ghost" disabled>🔀 Randomize List</button>
+      </div>
+
+      <div class="import-section">
+        <label class="import-label">Import League Teams</label>
+        <div class="import-tabs" role="tablist">
+          <button type="button" class="import-tab active" data-platform="sleeper">Sleeper</button>
+          <button type="button" class="import-tab" data-platform="espn">ESPN</button>
+          <button type="button" class="import-tab" data-platform="yahoo">Yahoo</button>
+        </div>
+        <div class="import-panel active" data-platform-panel="sleeper">
+          <div class="import-row">
+            <input type="text" id="sleeper-username" placeholder="Sleeper username" autocomplete="off">
+            <input type="text" id="sleeper-league" placeholder="League name or ID" autocomplete="off">
+            <button type="button" id="sleeper-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+        <div class="import-panel" data-platform-panel="espn">
+          <div class="import-row">
+            <input type="text" id="espn-league" placeholder="ESPN league ID or URL" autocomplete="off">
+            <input type="text" id="espn-season" placeholder="Season (optional)" autocomplete="off">
+            <button type="button" id="espn-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+        <div class="import-panel" data-platform-panel="yahoo">
+          <textarea id="yahoo-teams" rows="3" placeholder="Paste Yahoo team names, one per line"></textarea>
+          <button type="button" id="yahoo-import-btn" class="btn btn-secondary">Import Yahoo Teams</button>
+        </div>
+      </div>
+
+      <div class="add-team-row">
+        <input type="text" id="team-input" placeholder="e.g. Mahomes Alone" maxlength="40" autocomplete="off">
+        <button type="button" id="add-team-btn" class="btn btn-secondary">Add Team</button>
+      </div>
+
+      <div class="pick-direction-section">
+        <span class="pick-direction-label">Pick Assignment Order</span>
+        <div id="pick-direction-options" class="pick-direction-options" role="group" aria-label="Pick assignment order">
+          <button
+            type="button"
+            class="pick-dir-btn active"
+            data-direction="asc"
+            id="pick-asc-btn"
+            aria-pressed="true"
+          >
+            <span class="pick-dir-title">#1 First</span>
+            <span class="pick-dir-range" id="pick-asc-range">Counts up</span>
+          </button>
+          <button
+            type="button"
+            class="pick-dir-btn"
+            data-direction="desc"
+            id="pick-desc-btn"
+            aria-pressed="false"
+          >
+            <span class="pick-dir-title" id="pick-desc-title">Last Pick First</span>
+            <span class="pick-dir-range" id="pick-desc-range">Counts down</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-actions">
+        <button type="button" id="sample-teams-btn" class="btn btn-ghost">Load Sample Teams</button>
+        <button type="button" id="start-wheel-btn" class="btn btn-primary" disabled>Spin the Wheel! 🎡</button>
+      </div>
+    </section>
+
+    <!-- WHEEL -->
+    <section id="wheel-panel" class="panel hidden">
+      <div class="wheel-layout">
+        <div class="wheel-stage">
+          <p id="spin-prompt" class="spin-prompt">Spinning for pick <strong>#1</strong></p>
+
+          <div class="wheel-assembly">
+            <div class="wheel-pointer" aria-hidden="true"></div>
+            <div class="wheel-outer-ring">
+              <div id="wheel-spinner" class="wheel-spinner">
+                <svg id="wheel-svg" viewBox="0 0 400 400" aria-hidden="true"></svg>
+              </div>
+              <div class="wheel-hub" aria-hidden="true">🏈</div>
+            </div>
+          </div>
+
+          <button type="button" id="spin-btn" class="btn btn-spin">SPIN!</button>
+          <p id="winner-callout" class="winner-callout hidden"></p>
+        </div>
+
+        <aside class="draft-sidebar">
+          <h3>Draft Order</h3>
+          <ol id="live-draft-order" class="live-draft-order"></ol>
+          <p id="picks-remaining" class="picks-remaining"></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results-panel" class="panel hidden">
+      <h2>🏆 Final Draft Order</h2>
+      <ol id="final-draft-order" class="final-draft-order"></ol>
+      <div class="results-actions">
+        <button type="button" id="copy-order-btn" class="btn btn-secondary">Copy Draft Order</button>
+        <button type="button" id="spin-again-btn" class="btn btn-primary">Spin Again</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="sleeper.js"></script>
+  <script src="espn.js"></script>
+  <script src="yahoo.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
