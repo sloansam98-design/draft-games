@@ -64,8 +64,6 @@ const toast = $('#toast');
 const countdownOverlay = $('#countdown-overlay');
 const countdownNum = $('#countdown-num');
 const windOverlay = $('#wind-overlay');
-const fpPlayerGun = $('#fp-player-gun');
-const fpSpray = $('#fp-spray');
 const carnivalClown = $('#carnival-clown');
 const clownBubble = $('#clown-bubble');
 
@@ -179,17 +177,17 @@ function getLaneTilt(index, total) {
 
 function buildRaceColumns() {
   const total = state.teams.length;
+  raceColumns.style.setProperty('--lane-count', total);
   raceColumns.innerHTML = state.teams
     .map(
       (team, i) => `
-      <div class="fp-lane ${getLaneTilt(i, total)}" data-racer-index="${i}" style="--lane-i:${i};--lane-n:${total}">
+      <div class="fp-lane" data-racer-index="${i}">
         <div class="lane-name" title="${escapeHtml(team)}">${escapeHtml(truncateName(team))}</div>
         <div class="lane-3d">
-          <div class="lane-backboard">
-            <div class="finish-bell ${i === 0 ? 'first-bell' : ''}" aria-hidden="true">🏁</div>
-          </div>
           <div class="tube-assembly">
-            <div class="tube-cap" aria-hidden="true"></div>
+            <div class="tube-cap" aria-hidden="true">
+              <div class="finish-bell ${i === 0 ? 'first-bell' : ''}" aria-hidden="true">🏁</div>
+            </div>
             <div class="tube">
               <div class="water-fill" id="water-${i}" style="--team-color:${TEAM_COLORS[i % TEAM_COLORS.length]}"></div>
               <div class="water-bubbles" id="bubbles-${i}" aria-hidden="true"></div>
@@ -219,15 +217,6 @@ function truncateName(name, max = 11) {
 
 function getRaceColumn(index) {
   return raceColumns.querySelector(`[data-racer-index="${index}"]`);
-}
-
-function aimPlayerGun(racerIndex) {
-  if (!fpPlayerGun) return;
-  const total = state.teams.length;
-  const center = (total - 1) / 2;
-  const offset = racerIndex - center;
-  const yaw = Math.max(-22, Math.min(22, offset * (total > 4 ? 8 : 12)));
-  fpPlayerGun.style.setProperty('--gun-yaw', `${yaw}deg`);
 }
 
 function initRacers() {
@@ -290,27 +279,9 @@ function spawnRiseBubbles(racer) {
   setTimeout(() => bubble.remove(), 900);
 }
 
-function firePlayerGun(type) {
-  if (!fpPlayerGun) return;
-  fpPlayerGun.classList.remove('firing', 'firing-bullseye');
-  void fpPlayerGun.offsetWidth;
-  fpPlayerGun.classList.add('firing');
-  if (type === 'bullseye') fpPlayerGun.classList.add('firing-bullseye');
-  if (fpSpray) {
-    fpSpray.className = `fp-spray active spray-${type}`;
-    setTimeout(() => {
-      fpSpray.className = 'fp-spray';
-    }, type === 'bullseye' ? 520 : 400);
-  }
-  setTimeout(() => fpPlayerGun.classList.remove('firing', 'firing-bullseye'), type === 'bullseye' ? 520 : 400);
-}
-
 function triggerSpray(racer, type) {
   const { gun, spray, column } = racer.element;
   if (!column) return;
-
-  aimPlayerGun(racer.index);
-  firePlayerGun(type);
 
   gun?.classList.add('firing');
   if (spray) spray.className = `spray-burst spray-${type}`;
@@ -637,7 +608,6 @@ function showResults() {
 
   racePanel.classList.add('hidden');
   resultsPanel.classList.remove('hidden');
-  fpPlayerGun?.style.setProperty('--gun-yaw', '0deg');
 }
 
 function raceFrame(timestamp) {
