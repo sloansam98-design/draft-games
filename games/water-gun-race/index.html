@@ -15,6 +15,15 @@
   </nav>
 
   <div class="carnival-bg" aria-hidden="true">
+    <div class="sky-gradient"></div>
+    <div class="sun"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="ferris-wheel"></div>
+    <div class="bunting"></div>
+    <div class="grass"></div>
+    <div class="fair-lights"></div>
     <div class="awning-stripes"></div>
   </div>
 
@@ -84,15 +93,87 @@
       </div>
     </section>
 
-    <section id="race-panel" class="panel hidden">
+    <section id="race-panel" class="panel race-panel hidden">
       <div class="race-header">
         <p id="race-status" class="race-status">Load up! Aim for the bullseye!</p>
         <p id="race-timer" class="race-timer">0:30</p>
       </div>
 
-      <div class="booth">
-        <div class="booth-sign">💦 WATER GUN SHOWDOWN 💦</div>
-        <div id="race-columns" class="race-columns"></div>
+      <div class="race-stage">
+        <div id="countdown-overlay" class="countdown-overlay hidden">
+          <span id="countdown-num" class="countdown-num">3</span>
+        </div>
+
+        <div id="wind-overlay" class="wind-overlay hidden" aria-hidden="true">
+          <div class="wind-streaks"></div>
+          <p class="wind-label">💨 WIND GUST!</p>
+        </div>
+
+        <div class="fp-arena">
+          <div class="fp-scene">
+            <div class="fp-sky" aria-hidden="true"></div>
+            <div class="fp-booth-sign">
+              <span class="sign-bulb"></span>
+              WATER GUN SHOWDOWN
+              <span class="sign-bulb"></span>
+            </div>
+
+            <div id="race-columns" class="fp-lanes"></div>
+
+            <div class="fp-counter" aria-hidden="true"></div>
+
+            <div id="fp-player-gun" class="fp-player-gun">
+              <div class="squirt-gun squirt-gun--hero">
+                <div class="gun-tank"></div>
+                <div class="gun-body"></div>
+                <div class="gun-barrel"></div>
+                <div class="gun-nozzle"></div>
+                <div class="gun-handle"></div>
+                <div class="gun-trigger"></div>
+              </div>
+              <div id="fp-spray" class="fp-spray" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <aside id="carnival-clown" class="fp-clown" aria-hidden="true">
+            <div id="clown-bubble" class="clown-bubble">Let's blast!</div>
+            <div class="clown-figure">
+              <svg class="clown-svg" viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <ellipse cx="60" cy="188" rx="34" ry="8" fill="rgba(0,0,0,0.18)"/>
+                <ellipse class="clown-shoe clown-shoe--l" cx="38" cy="178" rx="16" ry="9" fill="#e53935" stroke="#b71c1c" stroke-width="2"/>
+                <ellipse class="clown-shoe clown-shoe--r" cx="82" cy="178" rx="16" ry="9" fill="#e53935" stroke="#b71c1c" stroke-width="2"/>
+                <rect x="42" y="118" width="36" height="58" rx="8" fill="#5e35b1" stroke="#311b92" stroke-width="2"/>
+                <circle cx="52" cy="138" r="5" fill="#fff"/>
+                <circle cx="68" cy="138" r="5" fill="#fff"/>
+                <circle cx="52" cy="158" r="5" fill="#fff"/>
+                <circle cx="68" cy="158" r="5" fill="#fff"/>
+                <path d="M34 128 Q24 118 18 100" fill="none" stroke="#ffcc80" stroke-width="10" stroke-linecap="round"/>
+                <path class="clown-wave-arm" d="M86 128 Q98 118 108 96" fill="none" stroke="#ffcc80" stroke-width="10" stroke-linecap="round"/>
+                <ellipse cx="60" cy="112" rx="30" ry="10" fill="#fff" stroke="#e53935" stroke-width="2"/>
+                <ellipse cx="60" cy="112" rx="30" ry="10" fill="url(#collarDots)"/>
+                <defs>
+                  <pattern id="collarDots" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <circle cx="4" cy="4" r="2.5" fill="#e53935"/>
+                  </pattern>
+                </defs>
+                <ellipse cx="60" cy="72" rx="34" ry="36" fill="#ffcc80" stroke="#e6a85c" stroke-width="2"/>
+                <ellipse cx="48" cy="66" rx="7" ry="9" fill="#fff" stroke="#333" stroke-width="1.5"/>
+                <ellipse cx="72" cy="66" rx="7" ry="9" fill="#fff" stroke="#333" stroke-width="1.5"/>
+                <circle cx="48" cy="68" r="3" fill="#1a2030"/>
+                <circle cx="72" cy="68" r="3" fill="#1a2030"/>
+                <circle cx="60" cy="80" r="11" fill="#e53935" stroke="#b71c1c" stroke-width="2"/>
+                <path d="M44 92 Q60 104 76 92" fill="none" stroke="#c62828" stroke-width="3" stroke-linecap="round"/>
+                <path d="M26 48 Q34 18 60 14 Q86 18 94 48" fill="#e53935"/>
+                <circle cx="28" cy="52" r="10" fill="#e53935"/>
+                <circle cx="92" cy="52" r="10" fill="#e53935"/>
+                <rect x="34" y="8" width="52" height="14" rx="4" fill="#1a2030"/>
+                <rect x="30" y="2" width="60" height="12" rx="3" fill="#1a2030"/>
+                <rect x="26" y="0" width="68" height="8" rx="2" fill="#263238"/>
+                <ellipse cx="60" cy="0" rx="10" ry="4" fill="#f5c842"/>
+              </svg>
+            </div>
+          </aside>
+        </div>
       </div>
 
       <aside class="race-sidebar">

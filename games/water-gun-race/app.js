@@ -18,6 +18,14 @@ const HIT_MESSAGES = {
   miss: ['Missed!', 'Wide left!', 'Sprayed the crowd!'],
 };
 
+const CLOWN_LINES = {
+  start: ['Aim for the stars!', 'Steady your spray!', 'Here we go!'],
+  bullseye: ['BULLSEYE!', 'What a shot!', 'Carnival legend!'],
+  wind: ['Hold on tight!', 'Wind incoming!', 'Brace yourselves!'],
+  leader: ['What a climb!', 'Neck and neck!', 'Going up!'],
+  finish: ['We have a winner!', 'Pick locked in!', 'Top of the tube!'],
+};
+
 const state = {
   teams: [],
   raceDuration: 30,
@@ -31,6 +39,8 @@ const state = {
   lastLeaderAnnounce: 0,
   nextStatusMessage: 0,
   lastPositionRanks: {},
+  nextWindGust: 0,
+  windActiveUntil: 0,
 };
 
 const teamList = $('#team-list');
@@ -51,6 +61,13 @@ const draftOrder = $('#draft-order');
 const copyOrderBtn = $('#copy-order-btn');
 const raceAgainBtn = $('#race-again-btn');
 const toast = $('#toast');
+const countdownOverlay = $('#countdown-overlay');
+const countdownNum = $('#countdown-num');
+const windOverlay = $('#wind-overlay');
+const fpPlayerGun = $('#fp-player-gun');
+const fpSpray = $('#fp-spray');
+const carnivalClown = $('#carnival-clown');
+const clownBubble = $('#clown-bubble');
 
 function showToast(msg) {
   toast.textContent = msg;
@@ -80,6 +97,16 @@ function shuffleArray(items) {
   return arr;
 }
 
+function pickLine(pool) {
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function setClownMood(mood, line) {
+  if (!carnivalClown || !clownBubble) return;
+  carnivalClown.className = `fp-clown clown-${mood}`;
+  clownBubble.textContent = line || pickLine(CLOWN_LINES[mood] || CLOWN_LINES.start);
+}
+
 function renderTeamList() {
   if (state.teams.length === 0) {
     teamList.innerHTML = '<p class="empty-teams">No teams yet — add some above!</p>';
@@ -94,7 +121,7 @@ function renderTeamList() {
       <div class="team-item">
         <span class="team-color" style="background:${TEAM_COLORS[i % TEAM_COLORS.length]}"></span>
         <span class="team-name">${escapeHtml(team)}</span>
-        <button type="button" class="remove-team-btn" data-index="${i}" aria-label="Remove ${escapeHtml(team)}">×</button>
+        <button type="button" class="remove-team-btn" data-team-index="${i}" aria-label="Remove ${escapeHtml(team)}">×</button>
       </div>`
     )
     .join('');
@@ -129,25 +156,54 @@ function setTeams(teams) {
   renderTeamList();
 }
 
+function gunHTML(size = '') {
+  return `
+    <div class="squirt-gun ${size}">
+      <div class="gun-tank"></div>
+      <div class="gun-body"></div>
+      <div class="gun-barrel"></div>
+      <div class="gun-nozzle"></div>
+      <div class="gun-handle"></div>
+      <div class="gun-trigger"></div>
+    </div>`;
+}
+
+function getLaneTilt(index, total) {
+  if (total <= 1) return 'lane-center';
+  const center = (total - 1) / 2;
+  const offset = index - center;
+  if (offset < -0.5) return 'lane-left';
+  if (offset > 0.5) return 'lane-right';
+  return 'lane-center';
+}
+
 function buildRaceColumns() {
+  const total = state.teams.length;
   raceColumns.innerHTML = state.teams
     .map(
       (team, i) => `
-      <div class="race-column" data-index="${i}">
-        <div class="column-name" title="${escapeHtml(team)}">${escapeHtml(truncateName(team))}</div>
-        <div class="tube">
-          <div class="finish-bell ${i === 0 ? 'first-bell' : ''}" aria-hidden="true">🏁</div>
-          <div class="tube-target" aria-hidden="true">
-            <span class="target-ring"></span>
-            <span class="target-center"></span>
+      <div class="fp-lane ${getLaneTilt(i, total)}" data-racer-index="${i}" style="--lane-i:${i};--lane-n:${total}">
+        <div class="lane-name" title="${escapeHtml(team)}">${escapeHtml(truncateName(team))}</div>
+        <div class="lane-3d">
+          <div class="lane-backboard">
+            <div class="finish-bell ${i === 0 ? 'first-bell' : ''}" aria-hidden="true">🏁</div>
+            <div class="tube-target" aria-hidden="true">
+              <span class="target-ring"></span>
+              <span class="target-center"></span>
+            </div>
           </div>
-          <div class="water-fill" id="water-${i}" style="--team-color:${TEAM_COLORS[i % TEAM_COLORS.length]}"></div>
-          <div class="water-surface" id="surface-${i}"></div>
-          <div class="team-marker" id="marker-${i}">💧</div>
+          <div class="tube">
+            <div class="water-fill" id="water-${i}" style="--team-color:${TEAM_COLORS[i % TEAM_COLORS.length]}"></div>
+            <div class="water-bubbles" id="bubbles-${i}" aria-hidden="true"></div>
+            <div class="water-surface" id="surface-${i}"></div>
+            <div class="team-marker" id="marker-${i}"></div>
+          </div>
+          <div class="lane-platform"></div>
         </div>
         <div class="gun-station">
-          <div class="water-gun" id="gun-${i}">🔫</div>
+          <div class="lane-gun">${gunHTML('squirt-gun--lane')}</div>
           <div class="spray-burst" id="spray-${i}" aria-hidden="true"></div>
+          <div class="droplets" id="droplets-${i}" aria-hidden="true"></div>
         </div>
       </div>`
     )
@@ -158,122 +214,211 @@ function truncateName(name, max = 11) {
   return name.length > max ? `${name.slice(0, max - 1)}…` : name;
 }
 
+function getRaceColumn(index) {
+  return raceColumns.querySelector(`[data-racer-index="${index}"]`);
+}
+
+function aimPlayerGun(racerIndex) {
+  if (!fpPlayerGun) return;
+  const total = state.teams.length;
+  const center = (total - 1) / 2;
+  const offset = racerIndex - center;
+  const yaw = Math.max(-22, Math.min(22, offset * (total > 4 ? 8 : 12)));
+  fpPlayerGun.style.setProperty('--gun-yaw', `${yaw}deg`);
+}
+
 function initRacers() {
-  state.racers = state.teams.map((name, index) => ({
-    index,
-    name,
-    level: 0,
-    finished: false,
-    speedFactor: 0.75 + Math.random() * 0.5,
-    momentum: 0.8 + Math.random() * 0.4,
-    momentumTarget: 1,
-    nextShot: 0,
-    nextMomentumChange: 0,
-    surgeUntil: 0,
-    slowUntil: 0,
-    element: {
-      fill: $(`#water-${index}`),
-      surface: $(`#surface-${index}`),
-      marker: $(`#marker-${index}`),
-      gun: $(`#gun-${index}`),
-      spray: $(`#spray-${index}`),
-      column: document.querySelector(`[data-index="${index}"]`),
-    },
-  }));
+  state.racers = state.teams.map((name, index) => {
+    const column = getRaceColumn(index);
+    return {
+      index,
+      name,
+      level: 0,
+      finished: false,
+      speedFactor: 0.85 + Math.random() * 0.45,
+      momentum: 0.9 + Math.random() * 0.35,
+      momentumTarget: 1,
+      nextShot: 0,
+      nextMomentumChange: 0,
+      surgeUntil: 0,
+      slowUntil: 0,
+      element: {
+        fill: $(`#water-${index}`),
+        surface: $(`#surface-${index}`),
+        marker: $(`#marker-${index}`),
+        gun: column?.querySelector('.gun-station .squirt-gun'),
+        spray: $(`#spray-${index}`),
+        droplets: $(`#droplets-${index}`),
+        bubbles: $(`#bubbles-${index}`),
+        column,
+        tube: column?.querySelector('.tube'),
+      },
+    };
+  });
 }
 
 function updateRacerVisual(racer) {
   const pct = Math.min(racer.level, 100);
-  racer.element.fill.style.height = `${pct}%`;
-  racer.element.surface.style.bottom = `${pct}%`;
-  racer.element.marker.style.bottom = `${pct}%`;
+  if (racer.element.fill) racer.element.fill.style.height = `${pct}%`;
+  if (racer.element.surface) racer.element.surface.style.bottom = `${pct}%`;
+  if (racer.element.marker) racer.element.marker.style.bottom = `${pct}%`;
+}
+
+function spawnDroplets(racer) {
+  const host = racer.element.droplets;
+  if (!host) return;
+  for (let i = 0; i < 5; i += 1) {
+    const drop = document.createElement('span');
+    drop.className = 'droplet';
+    drop.style.left = `${30 + Math.random() * 40}%`;
+    drop.style.animationDelay = `${Math.random() * 0.15}s`;
+    host.appendChild(drop);
+    setTimeout(() => drop.remove(), 600);
+  }
+}
+
+function spawnRiseBubbles(racer) {
+  const host = racer.element.bubbles;
+  if (!host || Math.random() > 0.4) return;
+  const bubble = document.createElement('span');
+  bubble.className = 'rise-bubble';
+  bubble.style.left = `${20 + Math.random() * 60}%`;
+  host.appendChild(bubble);
+  setTimeout(() => bubble.remove(), 900);
+}
+
+function firePlayerGun(type) {
+  if (!fpPlayerGun) return;
+  fpPlayerGun.classList.remove('firing', 'firing-bullseye');
+  void fpPlayerGun.offsetWidth;
+  fpPlayerGun.classList.add('firing');
+  if (type === 'bullseye') fpPlayerGun.classList.add('firing-bullseye');
+  if (fpSpray) {
+    fpSpray.className = `fp-spray active spray-${type}`;
+    setTimeout(() => {
+      fpSpray.className = 'fp-spray';
+    }, type === 'bullseye' ? 520 : 400);
+  }
+  setTimeout(() => fpPlayerGun.classList.remove('firing', 'firing-bullseye'), type === 'bullseye' ? 520 : 400);
 }
 
 function triggerSpray(racer, type) {
   const { gun, spray, column } = racer.element;
-  gun.classList.add('firing');
-  spray.className = `spray-burst spray-${type}`;
+  if (!column) return;
+
+  aimPlayerGun(racer.index);
+  firePlayerGun(type);
+
+  gun?.classList.add('firing');
+  if (spray) spray.className = `spray-burst spray-${type}`;
   column.classList.add('column-hit');
+  spawnDroplets(racer);
+
   setTimeout(() => {
-    gun.classList.remove('firing');
-    spray.className = 'spray-burst';
+    gun?.classList.remove('firing');
+    if (spray) spray.className = 'spray-burst';
     column.classList.remove('column-hit');
-  }, type === 'bullseye' ? 500 : 380);
+  }, type === 'bullseye' ? 550 : 400);
 }
 
 function showHitPopup(racer, message) {
+  const tube = racer.element.tube;
+  if (!tube) return;
   const popup = document.createElement('span');
   popup.className = 'hit-popup';
   popup.textContent = message;
-  racer.element.column.querySelector('.tube').appendChild(popup);
+  tube.appendChild(popup);
   setTimeout(() => popup.remove(), 900);
 }
 
 function updateMomentum(racer, now, deltaMs) {
   if (now >= racer.nextMomentumChange) {
     const roll = Math.random();
-    if (roll < 0.3) {
-      racer.momentumTarget = 1.3 + Math.random() * 0.5;
-      racer.surgeUntil = now + 1000 + Math.random() * 1500;
-      racer.element.column.classList.add('surging');
-    } else if (roll < 0.55) {
-      racer.momentumTarget = 0.35 + Math.random() * 0.35;
-      racer.element.column.classList.remove('surging');
+    if (roll < 0.32) {
+      racer.momentumTarget = 1.35 + Math.random() * 0.55;
+      racer.surgeUntil = now + 1000 + Math.random() * 1400;
+      racer.element.column?.classList.add('surging');
+    } else if (roll < 0.52) {
+      racer.momentumTarget = 0.4 + Math.random() * 0.35;
+      racer.element.column?.classList.remove('surging');
     } else {
-      racer.momentumTarget = 0.75 + Math.random() * 0.5;
-      racer.element.column.classList.remove('surging');
+      racer.momentumTarget = 0.8 + Math.random() * 0.55;
+      racer.element.column?.classList.remove('surging');
     }
-    racer.nextMomentumChange = now + 1000 + Math.random() * 2000;
+    racer.nextMomentumChange = now + 900 + Math.random() * 1800;
   }
 
   if (now >= racer.surgeUntil) {
-    racer.element.column.classList.remove('surging');
+    racer.element.column?.classList.remove('surging');
   }
 
-  const lerpRate = 0.05 * (deltaMs / 16);
+  const lerpRate = 0.06 * (deltaMs / 16);
   racer.momentum += (racer.momentumTarget - racer.momentum) * lerpRate;
 }
 
 function tryShoot(racer, now) {
   if (racer.finished || now < racer.nextShot) return;
 
-  racer.nextShot = now + 350 + Math.random() * 700;
+  racer.nextShot = now + 280 + Math.random() * 520;
 
   const roll = Math.random();
   let type;
   let rise = 0;
 
-  if (roll < 0.12) {
+  if (roll < 0.1) {
     type = 'miss';
     rise = 0;
-    const msgs = HIT_MESSAGES.miss;
-    showHitPopup(racer, msgs[Math.floor(Math.random() * msgs.length)]);
+    showHitPopup(racer, pickLine(HIT_MESSAGES.miss));
   } else if (roll < 0.28) {
     type = 'bullseye';
-    rise = (1.8 + Math.random() * 1.2) * racer.momentum * racer.speedFactor;
-    const msgs = HIT_MESSAGES.bullseye;
-    showHitPopup(racer, msgs[Math.floor(Math.random() * msgs.length)]);
+    rise = (2.2 + Math.random() * 1.5) * racer.momentum * racer.speedFactor;
+    showHitPopup(racer, pickLine(HIT_MESSAGES.bullseye));
+    setClownMood('bullseye');
   } else {
     type = 'hit';
-    rise = (0.6 + Math.random() * 0.9) * racer.momentum * racer.speedFactor;
-    if (Math.random() < 0.25) {
-      const msgs = HIT_MESSAGES.hit;
-      showHitPopup(racer, msgs[Math.floor(Math.random() * msgs.length)]);
-    }
+    rise = (0.9 + Math.random() * 1.1) * racer.momentum * racer.speedFactor;
+    if (Math.random() < 0.2) showHitPopup(racer, pickLine(HIT_MESSAGES.hit));
   }
 
-  if (now < racer.slowUntil) rise *= 0.2;
-  else if (now < racer.surgeUntil) rise *= 1.35;
+  if (now < racer.slowUntil) rise *= 0.15;
+  else if (now < racer.surgeUntil) rise *= 1.4;
 
   if (rise > 0) {
     triggerSpray(racer, type);
     racer.level = Math.min(100, racer.level + rise);
     updateRacerVisual(racer);
+    spawnRiseBubbles(racer);
     if (racer.level >= 100) recordFinish(racer);
   } else {
-    racer.element.gun.classList.add('firing-weak');
-    setTimeout(() => racer.element.gun.classList.remove('firing-weak'), 200);
+    racer.element.gun?.classList.add('firing-weak');
+    setTimeout(() => racer.element.gun?.classList.remove('firing-weak'), 200);
   }
+}
+
+function triggerWindGust(now) {
+  const duration = 1800 + Math.random() * 1200;
+  state.windActiveUntil = now + duration;
+  state.nextWindGust = now + 6000 + Math.random() * 5000;
+
+  windOverlay.classList.remove('hidden');
+  racePanel.classList.add('windy');
+  setClownMood('wind');
+  raceStatus.textContent = '💨 Wind gust! Everyone slows down!';
+
+  state.racers.forEach((racer) => {
+    if (racer.finished) return;
+    racer.slowUntil = Math.max(racer.slowUntil, now + duration);
+    racer.element.column?.querySelector('.lane-3d')?.classList.add('wind-hit');
+    setTimeout(
+      () => racer.element.column?.querySelector('.lane-3d')?.classList.remove('wind-hit'),
+      duration
+    );
+  });
+
+  setTimeout(() => {
+    windOverlay.classList.add('hidden');
+    racePanel.classList.remove('windy');
+  }, duration);
 }
 
 function compareLevel(a, b) {
@@ -365,9 +510,10 @@ function updateLeaderAnnouncement(now) {
     state.lastLeaderAnnounce = now;
     const gap = leader.level - racing[1].level;
     raceStatus.textContent =
-      gap < 4
+      gap < 5
         ? `💦 Neck and neck! ${leader.name} clings to the lead!`
         : `💦 ${leader.name} surges to the top!`;
+    setClownMood('leader');
     state.nextStatusMessage = now + 2200;
   }
 }
@@ -380,16 +526,33 @@ function recordFinish(racer) {
   racer.finished = true;
   racer.level = 100;
   updateRacerVisual(racer);
-  racer.element.column.classList.add('finished');
-  racer.element.column.classList.remove('surging');
+  racer.element.column?.classList.add('finished');
+  racer.element.column?.classList.remove('surging');
+  racer.element.column?.querySelector('.lane-3d')?.classList.remove('wind-hit');
 
   if (pick === 1) {
     document.querySelector('.first-bell')?.classList.add('ringing');
     raceStatus.textContent = `🏁 ${racer.name} hits the top — Pick #1!`;
+    setClownMood('finish', `${racer.name} wins #1!`);
+    spawnConfetti();
   }
 
   updateLiveStandings();
   updateLivePositions();
+}
+
+function spawnConfetti() {
+  const stage = document.querySelector('.race-stage');
+  if (!stage) return;
+  for (let i = 0; i < 24; i += 1) {
+    const piece = document.createElement('span');
+    piece.className = 'confetti-piece';
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.background = TEAM_COLORS[i % TEAM_COLORS.length];
+    piece.style.animationDelay = `${Math.random() * 0.4}s`;
+    stage.appendChild(piece);
+    setTimeout(() => piece.remove(), 2000);
+  }
 }
 
 function finalizeRemaining() {
@@ -422,43 +585,55 @@ function showResults() {
 
   racePanel.classList.add('hidden');
   resultsPanel.classList.remove('hidden');
+  fpPlayerGun?.style.setProperty('--gun-yaw', '0deg');
 }
 
 function raceFrame(timestamp) {
   if (!state.raceActive) return;
 
-  const now = timestamp || performance.now();
-  const deltaMs = Math.min(now - state.lastFrameTime, 50);
-  state.lastFrameTime = now;
+  try {
+    const now = timestamp || performance.now();
+    const deltaMs = Math.min(now - state.lastFrameTime, 50);
+    state.lastFrameTime = now;
 
-  const elapsed = now - state.raceStartTime;
-  const durationMs = state.raceDuration * 1000;
-  const remainingMs = Math.max(0, durationMs - elapsed);
-  updateTimer(remainingMs);
+    const elapsed = now - state.raceStartTime;
+    const durationMs = state.raceDuration * 1000;
+    const remainingMs = Math.max(0, durationMs - elapsed);
+    updateTimer(remainingMs);
 
-  state.racers.forEach((racer) => {
-    if (racer.finished) return;
-    if (racer.nextMomentumChange === 0) {
-      racer.nextMomentumChange = now + 600 + Math.random() * 1200;
+    if (now >= state.nextWindGust && now > state.windActiveUntil + 500) {
+      triggerWindGust(now);
     }
-    if (racer.nextShot === 0) {
-      racer.nextShot = now + Math.random() * 800;
+
+    state.racers.forEach((racer) => {
+      if (racer.finished) return;
+      if (racer.nextMomentumChange === 0) {
+        racer.nextMomentumChange = now + 400 + Math.random() * 800;
+      }
+      if (racer.nextShot === 0) {
+        racer.nextShot = now + Math.random() * 500;
+      }
+      updateMomentum(racer, now, deltaMs);
+      tryShoot(racer, now);
+    });
+
+    updateLivePositions();
+    updateLeaderAnnouncement(now);
+
+    if (state.racers.every((r) => r.finished)) {
+      endRace();
+      return;
     }
-    updateMomentum(racer, now, deltaMs);
-    tryShoot(racer, now);
-  });
 
-  updateLivePositions();
-  updateLeaderAnnouncement(now);
-
-  const allFinished = state.racers.every((r) => r.finished);
-  if (allFinished) {
-    endRace();
-    return;
-  }
-
-  if (remainingMs <= 0) {
-    raceStatus.textContent = "⏱️ Time's up! Ranking by height...";
+    if (remainingMs <= 0) {
+      raceStatus.textContent = "⏱️ Time's up! Ranking by height...";
+      endRace();
+      return;
+    }
+  } catch (err) {
+    console.error('Race frame error:', err);
+    state.raceActive = false;
+    showToast('Race hit a snag — showing results.');
     endRace();
     return;
   }
@@ -466,31 +641,76 @@ function raceFrame(timestamp) {
   state.animationId = requestAnimationFrame(raceFrame);
 }
 
-function startRace() {
-  state.finishOrder = [];
-  state.raceActive = true;
-  state.lastLeaderIndex = -1;
-  state.lastLeaderAnnounce = 0;
-  state.nextStatusMessage = 0;
-  state.lastPositionRanks = {};
+function wait(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
 
-  buildRaceColumns();
-  initRacers();
-  state.racers.forEach(updateRacerVisual);
-  updateLiveStandings();
-  updateLivePositions();
+async function runCountdown() {
+  if (!countdownOverlay || !countdownNum) return;
+  countdownOverlay.classList.remove('hidden');
+  const nums = ['3', '2', '1', 'GO!'];
+  for (const num of nums) {
+    countdownNum.textContent = num;
+    countdownNum.classList.remove('pop');
+    void countdownNum.offsetWidth;
+    countdownNum.classList.add('pop');
+    await wait(num === 'GO!' ? 700 : 850);
+  }
+  countdownOverlay.classList.add('hidden');
+}
 
-  raceStatus.textContent = '🔫 Blast away! First to the top wins #1!';
-  raceTimer.classList.remove('urgent');
-  updateTimer(state.raceDuration * 1000);
+async function startRace() {
+  if (state.raceActive || !raceColumns) return;
 
-  setupPanel.classList.add('hidden');
-  resultsPanel.classList.add('hidden');
-  racePanel.classList.remove('hidden');
+  startRaceBtn.disabled = true;
 
-  state.raceStartTime = performance.now();
-  state.lastFrameTime = state.raceStartTime;
-  state.animationId = requestAnimationFrame(raceFrame);
+  try {
+    state.finishOrder = [];
+    state.lastLeaderIndex = -1;
+    state.lastLeaderAnnounce = 0;
+    state.nextStatusMessage = 0;
+    state.lastPositionRanks = {};
+    state.nextWindGust = 0;
+    state.windActiveUntil = 0;
+    state.raceActive = false;
+    if (state.animationId) cancelAnimationFrame(state.animationId);
+
+    buildRaceColumns();
+    initRacers();
+
+    if (!state.racers.length || !state.racers[0].element.fill) {
+      throw new Error('Race lanes failed to load.');
+    }
+
+    state.racers.forEach(updateRacerVisual);
+    updateLiveStandings();
+    updateLivePositions();
+
+    raceStatus.textContent = 'Get ready to blast!';
+    raceTimer.classList.remove('urgent');
+    updateTimer(state.raceDuration * 1000);
+    windOverlay?.classList.add('hidden');
+    racePanel.classList.remove('windy');
+
+    setupPanel.classList.add('hidden');
+    resultsPanel.classList.add('hidden');
+    racePanel.classList.remove('hidden');
+
+    setClownMood('start');
+    await runCountdown();
+
+    state.raceActive = true;
+    state.raceStartTime = performance.now();
+    state.lastFrameTime = state.raceStartTime;
+    state.nextWindGust = state.raceStartTime + 4000 + Math.random() * 3000;
+    raceStatus.textContent = '🔫 Blast away! First to the top wins #1!';
+    state.animationId = requestAnimationFrame(raceFrame);
+  } catch (err) {
+    console.error(err);
+    showToast('Race failed to start — try again.');
+    resetToSetup();
+    startRaceBtn.disabled = state.teams.length < 2;
+  }
 }
 
 function resetToSetup() {
@@ -499,6 +719,9 @@ function resetToSetup() {
   racePanel.classList.add('hidden');
   resultsPanel.classList.add('hidden');
   setupPanel.classList.remove('hidden');
+  windOverlay?.classList.add('hidden');
+  countdownOverlay?.classList.add('hidden');
+  startRaceBtn.disabled = state.teams.length < 2;
 }
 
 async function handleImport(importFn, ...args) {
@@ -526,7 +749,7 @@ teamInput.addEventListener('keydown', (e) => {
 
 teamList.addEventListener('click', (e) => {
   const btn = e.target.closest('.remove-team-btn');
-  if (btn) removeTeam(Number(btn.dataset.index));
+  if (btn) removeTeam(Number(btn.dataset.teamIndex));
 });
 
 randomizeOrderBtn.addEventListener('click', () => {
