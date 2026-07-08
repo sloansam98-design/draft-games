@@ -26,6 +26,25 @@ const CLOWN_LINES = {
   finish: ['We have a winner!', 'Pick locked in!', 'Top of the tube!'],
 };
 
+const FLOAT_OBJECTS = [
+  { type: 'duck', icon: '🦆' },
+  { type: 'sailboat', icon: '⛵' },
+  { type: 'turtle', icon: '🐢' },
+  { type: 'beachball', icon: '🏐' },
+  { type: 'flamingo', icon: '🦩' },
+  { type: 'fish', icon: '🐠' },
+  { type: 'swan', icon: '🦢' },
+  { type: 'shell', icon: '🐚' },
+  { type: 'octopus', icon: '🐙' },
+  { type: 'speedboat', icon: '🚤' },
+  { type: 'crab', icon: '🦀' },
+  { type: 'seal', icon: '🦭' },
+  { type: 'whale', icon: '🐳' },
+  { type: 'starfish', icon: '⭐' },
+  { type: 'palm', icon: '🌴' },
+  { type: 'umbrella', icon: '⛱️' },
+];
+
 const state = {
   teams: [],
   raceDuration: 30,
@@ -99,6 +118,13 @@ function pickLine(pool) {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
+function placeLabel(pick) {
+  if (pick === 1) return '1ST PLACE!';
+  if (pick === 2) return '2ND PLACE!';
+  if (pick === 3) return '3RD PLACE!';
+  return `#${pick} PICK`;
+}
+
 function setClownMood(mood, line) {
   if (!carnivalClown || !clownBubble) return;
   carnivalClown.className = `fp-clown clown-${mood}`;
@@ -166,33 +192,35 @@ function gunHTML(size = '') {
     </div>`;
 }
 
-function getLaneTilt(index, total) {
-  if (total <= 1) return 'lane-center';
-  const center = (total - 1) / 2;
-  const offset = index - center;
-  if (offset < -0.5) return 'lane-left';
-  if (offset > 0.5) return 'lane-right';
-  return 'lane-center';
+function assignFloatObjects(count) {
+  const pool = [];
+  while (pool.length < count) {
+    pool.push(...shuffleArray([...FLOAT_OBJECTS]));
+  }
+  return pool.slice(0, count);
 }
 
 function buildRaceColumns() {
   const total = state.teams.length;
+  const floatAssignments = assignFloatObjects(total);
   raceColumns.style.setProperty('--lane-count', total);
   raceColumns.innerHTML = state.teams
     .map(
-      (team, i) => `
+      (team, i) => {
+        const floater = floatAssignments[i];
+        return `
       <div class="fp-lane" data-racer-index="${i}">
         <div class="lane-name" title="${escapeHtml(team)}">${escapeHtml(truncateName(team))}</div>
         <div class="lane-3d">
+          <div class="lane-finish-announce" id="finish-announce-${i}" aria-live="polite"></div>
           <div class="tube-assembly">
             <div class="tube-cap" aria-hidden="true">
               <div class="finish-bell ${i === 0 ? 'first-bell' : ''}" aria-hidden="true">🏁</div>
             </div>
             <div class="tube">
               <div class="water-fill" id="water-${i}" style="--team-color:${TEAM_COLORS[i % TEAM_COLORS.length]}"></div>
-              <div class="water-bubbles" id="bubbles-${i}" aria-hidden="true"></div>
               <div class="water-surface" id="surface-${i}"></div>
-              <div class="team-marker" id="marker-${i}"></div>
+              <div class="float-object float-object--${floater.type}" id="marker-${i}" aria-hidden="true">${floater.icon}</div>
             </div>
           </div>
           <div class="lane-platform"></div>
@@ -206,7 +234,8 @@ function buildRaceColumns() {
           <div class="spray-burst" id="spray-${i}" aria-hidden="true"></div>
           <div class="droplets" id="droplets-${i}" aria-hidden="true"></div>
         </div>
-      </div>`
+      </div>`;
+      }
     )
     .join('');
 }
@@ -238,10 +267,10 @@ function initRacers() {
         fill: $(`#water-${index}`),
         surface: $(`#surface-${index}`),
         marker: $(`#marker-${index}`),
+        announce: $(`#finish-announce-${index}`),
         gun: column?.querySelector('.gun-station .squirt-gun'),
         spray: $(`#spray-${index}`),
         droplets: $(`#droplets-${index}`),
-        bubbles: $(`#bubbles-${index}`),
         column,
         tube: column?.querySelector('.tube'),
       },
@@ -267,16 +296,6 @@ function spawnDroplets(racer) {
     host.appendChild(drop);
     setTimeout(() => drop.remove(), 600);
   }
-}
-
-function spawnRiseBubbles(racer) {
-  const host = racer.element.bubbles;
-  if (!host || Math.random() > 0.4) return;
-  const bubble = document.createElement('span');
-  bubble.className = 'rise-bubble';
-  bubble.style.left = `${20 + Math.random() * 60}%`;
-  host.appendChild(bubble);
-  setTimeout(() => bubble.remove(), 900);
 }
 
 function triggerSpray(racer, type) {
@@ -363,7 +382,6 @@ function tryShoot(racer, now) {
     triggerSpray(racer, type);
     racer.level = Math.min(100, racer.level + rise);
     updateRacerVisual(racer);
-    spawnRiseBubbles(racer);
     if (racer.level >= 100) recordFinish(racer);
   } else {
     racer.element.gun?.classList.add('firing-weak');
@@ -494,6 +512,18 @@ function updateLeaderAnnouncement(now) {
   }
 }
 
+function showFinishAnnounce(racer, pick) {
+  const announce = racer.element.announce;
+  if (!announce) return;
+  announce.textContent = placeLabel(pick);
+  announce.classList.remove('visible', 'place-gold', 'place-silver', 'place-bronze');
+  void announce.offsetWidth;
+  announce.classList.add('visible');
+  if (pick === 1) announce.classList.add('place-gold');
+  else if (pick === 2) announce.classList.add('place-silver');
+  else if (pick === 3) announce.classList.add('place-bronze');
+}
+
 function recordFinish(racer) {
   if (racer.finished) return;
 
@@ -505,6 +535,7 @@ function recordFinish(racer) {
   racer.element.column?.classList.add('finished');
   racer.element.column?.classList.remove('surging');
   racer.element.column?.querySelector('.lane-3d')?.classList.remove('wind-hit');
+  showFinishAnnounce(racer, pick);
 
   if (pick === 1) {
     document.querySelector('.first-bell')?.classList.add('ringing');

@@ -772,7 +772,52 @@ textarea#yahoo-teams {
   justify-content: flex-end;
   align-items: center;
   min-height: 0;
-  padding-top: 12px;
+  padding-top: 4px;
+}
+
+.lane-finish-announce {
+  flex-shrink: 0;
+  width: 100%;
+  min-height: 13px;
+  margin-bottom: 2px;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  color: transparent;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 7;
+}
+
+.lane-finish-announce.visible {
+  color: var(--gold);
+  animation: finishAnnouncePop 2.8s ease-out forwards;
+}
+
+.lane-finish-announce.place-gold {
+  color: #ffd54f;
+  font-size: 0.64rem;
+  text-shadow: 0 0 8px rgba(255, 213, 79, 0.8), 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.lane-finish-announce.place-silver {
+  color: #e0e0e0;
+  text-shadow: 0 0 6px rgba(224, 224, 224, 0.6), 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.lane-finish-announce.place-bronze {
+  color: #ffab40;
+  text-shadow: 0 0 6px rgba(255, 171, 64, 0.5), 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes finishAnnouncePop {
+  0% { opacity: 0; transform: scale(0.6); }
+  12% { opacity: 1; transform: scale(1.15); }
+  22% { transform: scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 .lane-platform {
@@ -893,29 +938,6 @@ textarea#yahoo-teams {
   z-index: 1;
 }
 
-.water-bubbles {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.rise-bubble {
-  position: absolute;
-  bottom: 10%;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
-  animation: bubbleRise 0.9s ease-out forwards;
-}
-
-@keyframes bubbleRise {
-  from { transform: translateY(0) scale(1); opacity: 0.8; }
-  to { transform: translateY(-55px) scale(0.35); opacity: 0; }
-}
-
 .water-surface {
   position: absolute;
   left: 0;
@@ -933,28 +955,48 @@ textarea#yahoo-teams {
   50% { opacity: 0.8; }
 }
 
-.team-marker {
+.float-object {
   position: absolute;
   left: 50%;
   bottom: 0%;
   transform: translateX(-50%);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fff, var(--water));
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-  z-index: 3;
+  font-size: 1.1rem;
+  line-height: 1;
+  z-index: 4;
   transition: bottom 0.12s ease-out;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+  animation: floatBob 2.4s ease-in-out infinite;
+  pointer-events: none;
+  user-select: none;
 }
 
-.fp-lane.finished .team-marker {
-  animation: markerCelebrate 0.6s ease-out;
+.float-object--sailboat,
+.float-object--speedboat {
+  font-size: 1rem;
 }
 
-@keyframes markerCelebrate {
+.float-object--whale {
+  font-size: 1.25rem;
+}
+
+.float-object--starfish,
+.float-object--shell {
+  font-size: 0.95rem;
+}
+
+@keyframes floatBob {
+  0%, 100% { transform: translateX(-50%) translateY(0) rotate(-5deg); }
+  50% { transform: translateX(-50%) translateY(-3px) rotate(5deg); }
+}
+
+.fp-lane.finished .float-object {
+  animation: floatCelebrate 0.8s ease-out, floatBob 2.4s ease-in-out 0.8s infinite;
+}
+
+@keyframes floatCelebrate {
   0%, 100% { transform: translateX(-50%) scale(1); }
-  50% { transform: translateX(-50%) scale(1.4); }
+  40% { transform: translateX(-50%) scale(1.35) rotate(8deg); }
+  70% { transform: translateX(-50%) scale(1.15) rotate(-4deg); }
 }
 
 .hit-popup {
