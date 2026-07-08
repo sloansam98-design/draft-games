@@ -39,7 +39,7 @@ Upload the entire project folder to [Netlify Drop](https://app.netlify.com/drop)
 | Duck Race | Live |
 | Draft Wheel | Live |
 | Coin Flip Showdown | Live |
-| Slot Machine Draft | Coming soon |
+| Slot Machine Draft | Live |
 | Water Gun Race | Coming soon |
 | Balloon Pop Race | Coming soon |
 | Home Run Derby | Coming soon |
