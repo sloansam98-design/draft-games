@@ -1,0 +1,792 @@
+:root {
+  --sky: #87ceeb;
+  --sky-deep: #4a9fd4;
+  --awning-red: #d62839;
+  --awning-white: #fff8f0;
+  --booth-wood: #8b5a2b;
+  --gold: #f5c842;
+  --water: #4fc3f7;
+  --water-deep: #0288d1;
+  --text: #1a2030;
+  --text-light: #f8faf9;
+  --text-muted: #5a6e7a;
+  --panel-bg: rgba(255, 252, 245, 0.96);
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  --radius: 16px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  background: var(--sky);
+  overflow-x: hidden;
+}
+
+.carnival-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, #7ec8e8 0%, var(--sky) 40%, #b8e4f8 100%);
+}
+
+.awning-stripes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--awning-red) 0,
+    var(--awning-red) 28px,
+    var(--awning-white) 28px,
+    var(--awning-white) 56px
+  );
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.site-nav {
+  position: relative;
+  z-index: 10;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 0;
+}
+
+.site-nav-link {
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2a4060;
+  text-decoration: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.header,
+.container {
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 0.5rem;
+}
+
+.logo {
+  font-size: 2.8rem;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+}
+
+.header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: #1a3050;
+}
+
+.tagline {
+  font-size: 0.95rem;
+  color: #3a5570;
+  margin-top: 0.2rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 2.5rem;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 2px solid rgba(214, 40, 57, 0.15);
+}
+
+.panel h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.35rem;
+  color: #1a3050;
+}
+
+.hint {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.team-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 1rem;
+  background: rgba(79, 195, 247, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(2, 136, 209, 0.15);
+}
+
+.team-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.team-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.remove-team-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+}
+
+.remove-team-btn:hover {
+  color: var(--awning-red);
+}
+
+.empty-teams {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.team-list-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.import-section {
+  margin-bottom: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.import-label,
+.duration-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.import-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.import-tab {
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.import-tab.active {
+  background: rgba(214, 40, 57, 0.1);
+  border-color: var(--awning-red);
+  color: var(--awning-red);
+}
+
+.import-panel {
+  display: none;
+}
+
+.import-panel.active {
+  display: block;
+}
+
+.import-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.import-row input,
+.add-team-row input,
+textarea#yahoo-teams {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: white;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+textarea#yahoo-teams {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  resize: vertical;
+}
+
+.add-team-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.duration-section {
+  margin-bottom: 1.25rem;
+}
+
+.duration-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.duration-btn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  background: white;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.duration-btn.active {
+  border-color: var(--water-deep);
+  background: rgba(79, 195, 247, 0.15);
+  color: var(--water-deep);
+}
+
+.setup-actions,
+.results-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--water-deep) 0%, #01579b 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(2, 136, 209, 0.35);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Race panel */
+#race-panel {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.race-header {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.race-status {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1a3050;
+}
+
+.race-timer {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.05em;
+  color: var(--water-deep);
+  min-width: 4rem;
+  text-align: right;
+}
+
+.race-timer.urgent {
+  color: var(--awning-red);
+  animation: timerPulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes timerPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.booth {
+  background: linear-gradient(180deg, #a0714f 0%, var(--booth-wood) 100%);
+  border-radius: 14px;
+  padding: 1rem 0.75rem 1.25rem;
+  border: 4px solid #6d4522;
+  box-shadow: inset 0 2px 8px rgba(255, 255, 255, 0.15), 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.booth-sign {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: var(--gold);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  margin-bottom: 1rem;
+}
+
+.race-columns {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-snap-type: x proximity;
+}
+
+.race-column {
+  flex: 1 0 72px;
+  min-width: 72px;
+  max-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  scroll-snap-align: start;
+  transition: transform 0.2s ease;
+}
+
+.race-column.surging {
+  transform: translateY(-2px);
+}
+
+.race-column.finished .team-marker {
+  animation: markerCelebrate 0.6s ease-out;
+}
+
+@keyframes markerCelebrate {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.3); }
+}
+
+.column-name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tube {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(0, 0, 0, 0.08) 100%);
+  border-radius: 10px 10px 4px 4px;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.finish-bell {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  z-index: 4;
+  opacity: 0.85;
+}
+
+.finish-bell.ringing {
+  animation: bellRing 0.5s ease-in-out 3;
+}
+
+@keyframes bellRing {
+  0%, 100% { transform: translateX(-50%) rotate(0); }
+  25% { transform: translateX(-50%) rotate(12deg); }
+  75% { transform: translateX(-50%) rotate(-12deg); }
+}
+
+.tube-target {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 36px;
+  z-index: 3;
+}
+
+.target-ring {
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--awning-red);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.target-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: var(--awning-red);
+  border-radius: 50%;
+}
+
+.water-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  background: linear-gradient(180deg, var(--team-color, var(--water)) 0%, var(--water-deep) 100%);
+  opacity: 0.85;
+  transition: height 0.15s ease-out;
+  z-index: 1;
+}
+
+.water-surface {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.45);
+  z-index: 2;
+  transition: bottom 0.15s ease-out;
+  animation: surfaceRipple 1.2s ease-in-out infinite;
+}
+
+@keyframes surfaceRipple {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.7; }
+}
+
+.team-marker {
+  position: absolute;
+  left: 50%;
+  bottom: 0%;
+  transform: translateX(-50%);
+  font-size: 1.1rem;
+  z-index: 3;
+  transition: bottom 0.15s ease-out;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.hit-popup {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translateX(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  z-index: 5;
+  animation: popupFloat 0.9s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes popupFloat {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to { opacity: 0; transform: translateX(-50%) translateY(-28px); }
+}
+
+.gun-station {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.15rem;
+}
+
+.water-gun {
+  font-size: 1.4rem;
+  transform-origin: bottom center;
+  transition: transform 0.1s ease;
+}
+
+.water-gun.firing {
+  transform: rotate(-18deg) scale(1.1);
+}
+
+.water-gun.firing-weak {
+  transform: rotate(-8deg);
+}
+
+.spray-burst {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.spray-burst.spray-hit,
+.spray-burst.spray-bullseye {
+  opacity: 1;
+  width: 24px;
+  height: 80px;
+  margin-left: -12px;
+  background: linear-gradient(180deg, rgba(79, 195, 247, 0.9) 0%, rgba(79, 195, 247, 0.2) 70%, transparent 100%);
+  border-radius: 50% 50% 20% 20%;
+  animation: sprayShoot 0.38s ease-out forwards;
+}
+
+.spray-burst.spray-bullseye {
+  width: 32px;
+  height: 100px;
+  margin-left: -16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(79, 195, 247, 0.8) 40%, transparent 100%);
+  animation: sprayShoot 0.48s ease-out forwards;
+}
+
+@keyframes sprayShoot {
+  from { transform: scaleY(0.2); opacity: 0.6; }
+  to { transform: scaleY(1); opacity: 0; }
+}
+
+.race-column.column-hit .tube-target .target-ring {
+  animation: targetHit 0.35s ease-out;
+}
+
+@keyframes targetHit {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); border-color: var(--gold); }
+  100% { transform: scale(1); }
+}
+
+.race-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-block {
+  background: rgba(79, 195, 247, 0.1);
+  border-radius: 12px;
+  padding: 0.85rem;
+  border: 1px solid rgba(2, 136, 209, 0.15);
+}
+
+.sidebar-block h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  color: var(--water-deep);
+  margin-bottom: 0.6rem;
+}
+
+.live-positions,
+.live-standings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.position-chip,
+.standing-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.55rem;
+  background: white;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.position-chip.leader {
+  background: rgba(245, 200, 66, 0.25);
+  border-color: var(--gold);
+  font-weight: 600;
+}
+
+.position-chip.finished {
+  opacity: 0.55;
+}
+
+.position-chip.moved-up {
+  animation: chipUp 0.4s ease-out;
+}
+
+.position-chip.moved-down {
+  animation: chipDown 0.4s ease-out;
+}
+
+@keyframes chipUp {
+  from { background: rgba(76, 175, 80, 0.3); }
+}
+
+@keyframes chipDown {
+  from { background: rgba(244, 67, 54, 0.2); }
+}
+
+.position-rank,
+.pick-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.95rem;
+  color: var(--water-deep);
+  min-width: 1.2rem;
+}
+
+.standing-empty {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.draft-order {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.draft-order li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.85rem;
+  background: rgba(79, 195, 247, 0.1);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.pick-badge {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  color: var(--water-deep);
+  min-width: 1.75rem;
+}
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(26, 48, 80, 0.92);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid var(--water);
+  z-index: 100;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 800px) {
+  #race-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .race-sidebar {
+    order: -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .sidebar-block {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .race-column {
+    min-width: 64px;
+  }
+
+  .tube {
+    height: 180px;
+  }
+}

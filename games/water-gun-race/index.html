@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Gun Race — Draft Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="../../index.html" class="site-nav-link">← Draft Games</a>
+  </nav>
+
+  <div class="carnival-bg" aria-hidden="true">
+    <div class="awning-stripes"></div>
+  </div>
+
+  <header class="header">
+    <div class="logo">🔫</div>
+    <div>
+      <h1>Water Gun Race</h1>
+      <p class="tagline">Blast the target. Rise to the top. First team up wins #1.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="setup-panel" class="panel">
+      <h2>Enter Your Teams</h2>
+      <p class="hint">Add at least 2 teams. Each team gets a water gun — first to hit the top claims the pick.</p>
+
+      <div id="team-list" class="team-list"></div>
+
+      <div class="team-list-actions">
+        <button type="button" id="randomize-order-btn" class="btn btn-ghost" disabled>🔀 Randomize List</button>
+      </div>
+
+      <div class="import-section">
+        <label class="import-label">Import League Teams</label>
+        <div class="import-tabs" role="tablist">
+          <button type="button" class="import-tab active" data-platform="sleeper">Sleeper</button>
+          <button type="button" class="import-tab" data-platform="espn">ESPN</button>
+          <button type="button" class="import-tab" data-platform="yahoo">Yahoo</button>
+        </div>
+        <div class="import-panel active" data-platform-panel="sleeper">
+          <div class="import-row">
+            <input type="text" id="sleeper-username" placeholder="Sleeper username" autocomplete="off">
+            <input type="text" id="sleeper-league" placeholder="League name or ID" autocomplete="off">
+            <button type="button" id="sleeper-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+        <div class="import-panel" data-platform-panel="espn">
+          <div class="import-row">
+            <input type="text" id="espn-league" placeholder="ESPN league ID or URL" autocomplete="off">
+            <input type="text" id="espn-season" placeholder="Season (optional)" autocomplete="off">
+            <button type="button" id="espn-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+        <div class="import-panel" data-platform-panel="yahoo">
+          <textarea id="yahoo-teams" rows="3" placeholder="Paste Yahoo team names, one per line"></textarea>
+          <button type="button" id="yahoo-import-btn" class="btn btn-secondary">Import Yahoo Teams</button>
+        </div>
+      </div>
+
+      <div class="add-team-row">
+        <input type="text" id="team-input" placeholder="e.g. Mahomes Alone" maxlength="40" autocomplete="off">
+        <button type="button" id="add-team-btn" class="btn btn-secondary">Add Team</button>
+      </div>
+
+      <div class="duration-section">
+        <span class="duration-label">Race Length</span>
+        <div class="duration-options" role="group" aria-label="Race length">
+          <button type="button" class="duration-btn active" data-duration="30">30 sec</button>
+          <button type="button" class="duration-btn" data-duration="45">45 sec</button>
+          <button type="button" class="duration-btn" data-duration="60">60 sec</button>
+        </div>
+      </div>
+
+      <div class="setup-actions">
+        <button type="button" id="sample-teams-btn" class="btn btn-ghost">Load Sample Teams</button>
+        <button type="button" id="start-race-btn" class="btn btn-primary" disabled>Start the Race! 🔫</button>
+      </div>
+    </section>
+
+    <section id="race-panel" class="panel hidden">
+      <div class="race-header">
+        <p id="race-status" class="race-status">Load up! Aim for the bullseye!</p>
+        <p id="race-timer" class="race-timer">0:30</p>
+      </div>
+
+      <div class="booth">
+        <div class="booth-sign">💦 WATER GUN SHOWDOWN 💦</div>
+        <div id="race-columns" class="race-columns"></div>
+      </div>
+
+      <aside class="race-sidebar">
+        <div class="sidebar-block">
+          <h3>Live Standings</h3>
+          <div id="live-positions" class="live-positions"></div>
+        </div>
+        <div class="sidebar-block">
+          <h3>Finished</h3>
+          <div id="live-standings" class="live-standings"></div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="results-panel" class="panel hidden">
+      <h2>🏆 Final Draft Order</h2>
+      <ol id="draft-order" class="draft-order"></ol>
+      <div class="results-actions">
+        <button type="button" id="copy-order-btn" class="btn btn-secondary">Copy Draft Order</button>
+        <button type="button" id="race-again-btn" class="btn btn-primary">Race Again</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="sleeper.js"></script>
+  <script src="espn.js"></script>
+  <script src="yahoo.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
