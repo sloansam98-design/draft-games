@@ -187,18 +187,21 @@ function buildRaceColumns() {
         <div class="lane-3d">
           <div class="lane-backboard">
             <div class="finish-bell ${i === 0 ? 'first-bell' : ''}" aria-hidden="true">🏁</div>
-            <div class="tube-target" aria-hidden="true">
-              <span class="target-ring"></span>
-              <span class="target-center"></span>
+          </div>
+          <div class="tube-assembly">
+            <div class="tube-cap" aria-hidden="true"></div>
+            <div class="tube">
+              <div class="water-fill" id="water-${i}" style="--team-color:${TEAM_COLORS[i % TEAM_COLORS.length]}"></div>
+              <div class="water-bubbles" id="bubbles-${i}" aria-hidden="true"></div>
+              <div class="water-surface" id="surface-${i}"></div>
+              <div class="team-marker" id="marker-${i}"></div>
             </div>
           </div>
-          <div class="tube">
-            <div class="water-fill" id="water-${i}" style="--team-color:${TEAM_COLORS[i % TEAM_COLORS.length]}"></div>
-            <div class="water-bubbles" id="bubbles-${i}" aria-hidden="true"></div>
-            <div class="water-surface" id="surface-${i}"></div>
-            <div class="team-marker" id="marker-${i}"></div>
-          </div>
           <div class="lane-platform"></div>
+          <div class="tube-base-target" aria-hidden="true">
+            <span class="target-ring"></span>
+            <span class="target-center"></span>
+          </div>
         </div>
         <div class="gun-station">
           <div class="lane-gun">${gunHTML('squirt-gun--lane')}</div>
@@ -312,22 +315,24 @@ function triggerSpray(racer, type) {
   gun?.classList.add('firing');
   if (spray) spray.className = `spray-burst spray-${type}`;
   column.classList.add('column-hit');
+  column.querySelector('.tube-base-target')?.classList.add('target-hit');
   spawnDroplets(racer);
 
   setTimeout(() => {
     gun?.classList.remove('firing');
     if (spray) spray.className = 'spray-burst';
     column.classList.remove('column-hit');
+    column.querySelector('.tube-base-target')?.classList.remove('target-hit');
   }, type === 'bullseye' ? 550 : 400);
 }
 
 function showHitPopup(racer, message) {
-  const tube = racer.element.tube;
-  if (!tube) return;
+  const target = racer.element.column?.querySelector('.tube-base-target');
+  if (!target) return;
   const popup = document.createElement('span');
   popup.className = 'hit-popup';
   popup.textContent = message;
-  tube.appendChild(popup);
+  target.appendChild(popup);
   setTimeout(() => popup.remove(), 900);
 }
 
@@ -535,10 +540,57 @@ function recordFinish(racer) {
     raceStatus.textContent = `🏁 ${racer.name} hits the top — Pick #1!`;
     setClownMood('finish', `${racer.name} wins #1!`);
     spawnConfetti();
+  } else {
+    raceStatus.textContent = `🎆 ${racer.name} hits the top — Pick #${pick}!`;
   }
+
+  spawnFireworks(racer, pick);
 
   updateLiveStandings();
   updateLivePositions();
+}
+
+function spawnFireworks(racer, pick) {
+  const tube = racer.element.tube;
+  const stage = document.querySelector('.race-stage');
+  if (!tube || !stage) return;
+
+  const tubeRect = tube.getBoundingClientRect();
+  const stageRect = stage.getBoundingClientRect();
+  const burstX = tubeRect.left + tubeRect.width / 2 - stageRect.left;
+  const burstY = tubeRect.top - stageRect.top - 6;
+  const colors = [
+    TEAM_COLORS[racer.index % TEAM_COLORS.length],
+    '#f5c842',
+    '#e53935',
+    '#fff',
+    '#4fc3f7',
+  ];
+  const particleCount = pick === 1 ? 28 : 16;
+  const burstCount = pick === 1 ? 3 : 2;
+
+  for (let b = 0; b < burstCount; b += 1) {
+    const burst = document.createElement('div');
+    burst.className = 'firework-burst';
+    burst.style.left = `${burstX + (Math.random() - 0.5) * 18}px`;
+    burst.style.top = `${burstY + (Math.random() - 0.5) * 10}px`;
+    burst.style.animationDelay = `${b * 0.12}s`;
+    stage.appendChild(burst);
+
+    for (let i = 0; i < particleCount; i += 1) {
+      const particle = document.createElement('span');
+      particle.className = 'firework-particle';
+      const angle = (Math.PI * 2 * i) / particleCount + Math.random() * 0.4;
+      const dist = 28 + Math.random() * (pick === 1 ? 52 : 36);
+      particle.style.setProperty('--fx', `${Math.cos(angle) * dist}px`);
+      particle.style.setProperty('--fy', `${Math.sin(angle) * dist}px`);
+      particle.style.background = colors[i % colors.length];
+      particle.style.animationDelay = `${b * 0.12 + Math.random() * 0.08}s`;
+      burst.appendChild(particle);
+    }
+
+    setTimeout(() => burst.remove(), 1600);
+  }
 }
 
 function spawnConfetti() {
