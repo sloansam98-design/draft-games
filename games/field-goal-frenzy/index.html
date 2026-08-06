@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Field Goal Frenzy — Draft Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="../../index.html" class="site-nav-link">← Draft Games</a>
+  </nav>
+
+  <div class="stadium-bg" aria-hidden="true">
+    <div class="stadium-lights"></div>
+    <div class="stadium-crowd"></div>
+  </div>
+
+  <header class="header">
+    <div class="logo">🏈</div>
+    <div>
+      <h1>Field Goal Frenzy</h1>
+      <p class="tagline">Step up from the hash marks. Most field goals wins the top pick.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="setup-panel" class="panel">
+      <h2>Enter Your Teams</h2>
+      <p class="hint">Add at least 2 teams. Each squad gets equal kicks from the hash marks — most makes claims #1.</p>
+
+      <div id="team-list" class="team-list"></div>
+
+      <div class="team-list-actions">
+        <button type="button" id="randomize-order-btn" class="btn btn-ghost" disabled>🔀 Randomize Order</button>
+      </div>
+
+      <div class="import-section">
+        <span class="import-label">Import League Teams</span>
+        <div class="import-tabs" role="tablist">
+          <button type="button" class="import-tab active" data-platform="sleeper">Sleeper</button>
+          <button type="button" class="import-tab" data-platform="espn">ESPN</button>
+          <button type="button" class="import-tab" data-platform="yahoo">Yahoo</button>
+        </div>
+        <div class="import-panel active" data-platform-panel="sleeper">
+          <div class="import-row">
+            <input type="text" id="sleeper-username" placeholder="Sleeper username" autocomplete="off">
+            <input type="text" id="sleeper-league" placeholder="League name or ID" autocomplete="off">
+            <button type="button" id="sleeper-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+        <div class="import-panel" data-platform-panel="espn">
+          <div class="import-row">
+            <input type="text" id="espn-league" placeholder="ESPN league ID or URL" autocomplete="off">
+            <input type="text" id="espn-season" placeholder="Season (optional)" autocomplete="off">
+            <button type="button" id="espn-import-btn" class="btn btn-secondary">Import</button>
+          </div>
+        </div>
+        <div class="import-panel" data-platform-panel="yahoo">
+          <textarea id="yahoo-teams" rows="3" placeholder="Paste Yahoo team names, one per line"></textarea>
+          <button type="button" id="yahoo-import-btn" class="btn btn-secondary">Import Yahoo Teams</button>
+        </div>
+      </div>
+
+      <div class="add-team-row">
+        <input type="text" id="team-input" placeholder="e.g. Mahomes Alone" maxlength="40" autocomplete="off">
+        <button type="button" id="add-team-btn" class="btn btn-secondary">Add Team</button>
+      </div>
+
+      <div class="option-section">
+        <label class="option-label">Kicks Per Team</label>
+        <div class="option-buttons" role="radiogroup" aria-label="Kicks per team">
+          <button type="button" class="option-btn" data-kicks="3">3 kicks</button>
+          <button type="button" class="option-btn active" data-kicks="5">5 kicks</button>
+          <button type="button" class="option-btn" data-kicks="8">8 kicks</button>
+          <button type="button" class="option-btn" data-kicks="10">10 kicks</button>
+        </div>
+      </div>
+
+      <div class="setup-actions">
+        <button type="button" id="sample-teams-btn" class="btn btn-ghost">Load Sample Teams</button>
+        <button type="button" id="start-game-btn" class="btn btn-primary" disabled>Kick Off! 🏈</button>
+      </div>
+    </section>
+
+    <section id="game-panel" class="panel hidden">
+      <div class="game-header">
+        <div class="game-header-top">
+          <h2>From the Hash Marks</h2>
+          <div id="kick-counter" class="kick-counter">Kick 1 of 10</div>
+        </div>
+        <p id="game-status" class="game-status">Teams are lining up at the goal posts...</p>
+      </div>
+
+      <div class="field-layout">
+        <div class="field-main">
+          <div id="field-scene" class="field-scene">
+            <svg class="goal-posts" viewBox="0 0 200 120" aria-hidden="true">
+              <rect x="92" y="40" width="16" height="70" fill="#e8c840" rx="2"/>
+              <rect x="40" y="32" width="120" height="10" fill="#e8c840" rx="2"/>
+              <rect x="40" y="8" width="10" height="34" fill="#e8c840" rx="2"/>
+              <rect x="150" y="8" width="10" height="34" fill="#e8c840" rx="2"/>
+            </svg>
+            <div id="kick-announce" class="kick-announce hidden" aria-live="polite"></div>
+            <div id="kicker-lanes" class="kicker-lanes"></div>
+          </div>
+        </div>
+
+        <aside class="standings-sidebar">
+          <h3>Live Standings</h3>
+          <ol id="live-standings" class="live-standings"></ol>
+        </aside>
+      </div>
+    </section>
+
+    <section id="results-panel" class="panel hidden">
+      <h2>🏆 Final Draft Order</h2>
+      <p class="hint">Most field goals made. Tie-breaker: fewer misses, then kick order.</p>
+      <ol id="draft-order" class="draft-order"></ol>
+      <div class="results-actions">
+        <button type="button" id="copy-order-btn" class="btn btn-secondary">Copy Draft Order</button>
+        <button type="button" id="play-again-btn" class="btn btn-primary">Kick Again</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>May the most accurate kicker win the first pick. Good luck this season!</p>
+  </footer>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="sleeper.js"></script>
+  <script src="espn.js"></script>
+  <script src="yahoo.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

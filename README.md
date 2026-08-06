@@ -40,9 +40,9 @@ Upload the entire project folder to [Netlify Drop](https://app.netlify.com/drop)
 | Draft Wheel | Live |
 | Coin Flip Showdown | Live |
 | Slot Machine Draft | Live |
+| Field Goal Frenzy | Live |
 | Home Run Derby | Coming soon |
 | Free Throw Face-Off | Coming soon |
 | Face-Off Showdown | Coming soon |
-| Field Goal Frenzy | Coming soon |
 
 No build step required — plain HTML, CSS, and JavaScript.
