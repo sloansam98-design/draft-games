@@ -1,0 +1,40 @@
+<svg viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="wheel-ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="50%" stop-color="#F5C842"/>
+      <stop offset="100%" stop-color="#C9A020"/>
+    </linearGradient>
+    <radialGradient id="wheel-hub" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#FFF8E1"/>
+      <stop offset="100%" stop-color="#F5C842"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Gold prize-show ring -->
+  <circle cx="44" cy="44" r="41" fill="none" stroke="url(#wheel-ring)" stroke-width="5"/>
+  <circle cx="44" cy="44" r="38.5" fill="#1a1a22" stroke="rgba(0,0,0,0.35)" stroke-width="1"/>
+
+  <!-- Segments: 1st through 6th -->
+  <path d="M44 44 L44 6 A38 38 0 0 1 76.9 25 Z" fill="#E53935" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+  <path d="M44 44 L76.9 25 A38 38 0 0 1 76.9 63 Z" fill="#1E88E5" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+  <path d="M44 44 L76.9 63 A38 38 0 0 1 44 82 Z" fill="#43A047" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+  <path d="M44 44 L44 82 A38 38 0 0 1 11.1 63 Z" fill="#FB8C00" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+  <path d="M44 44 L11.1 63 A38 38 0 0 1 11.1 25 Z" fill="#8E24AA" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+  <path d="M44 44 L11.1 25 A38 38 0 0 1 44 6 Z" fill="#00ACC1" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+
+  <!-- Pick labels -->
+  <text x="44" y="22" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="7.5" font-weight="700" fill="#fff" stroke="rgba(0,0,0,0.35)" stroke-width="0.4" paint-order="stroke">1st</text>
+  <text x="63" y="33" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="7.5" font-weight="700" fill="#fff" stroke="rgba(0,0,0,0.35)" stroke-width="0.4" paint-order="stroke" transform="rotate(60 63 33)">2nd</text>
+  <text x="63" y="58" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="7.5" font-weight="700" fill="#fff" stroke="rgba(0,0,0,0.35)" stroke-width="0.4" paint-order="stroke" transform="rotate(120 63 58)">3rd</text>
+  <text x="44" y="68" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="7.5" font-weight="700" fill="#fff" stroke="rgba(0,0,0,0.35)" stroke-width="0.4" paint-order="stroke" transform="rotate(180 44 68)">4th</text>
+  <text x="25" y="58" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="7.5" font-weight="700" fill="#fff" stroke="rgba(0,0,0,0.35)" stroke-width="0.4" paint-order="stroke" transform="rotate(240 25 58)">5th</text>
+  <text x="25" y="33" text-anchor="middle" font-family="DM Sans, Arial, sans-serif" font-size="7.5" font-weight="700" fill="#fff" stroke="rgba(0,0,0,0.35)" stroke-width="0.4" paint-order="stroke" transform="rotate(300 25 33)">6th</text>
+
+  <!-- Center hub -->
+  <circle cx="44" cy="44" r="9" fill="url(#wheel-hub)" stroke="#B8860B" stroke-width="1.2"/>
+  <circle cx="44" cy="44" r="4.5" fill="#FFFDE7" opacity="0.85"/>
+
+  <!-- Top pointer -->
+  <path d="M44 2 L50 12 L38 12 Z" fill="#FF5252" stroke="#B71C1C" stroke-width="0.8" stroke-linejoin="round"/>
+</svg>
