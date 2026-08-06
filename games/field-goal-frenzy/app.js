@@ -38,6 +38,8 @@ const kickCounter = $('#kick-counter');
 const gameStatus = $('#game-status');
 const kickAnnounce = $('#kick-announce');
 const liveStandings = $('#live-standings');
+const fieldScene = $('#field-scene');
+const flightBall = $('#flight-ball');
 const draftOrder = $('#draft-order');
 const copyOrderBtn = $('#copy-order-btn');
 const playAgainBtn = $('#play-again-btn');
@@ -138,6 +140,38 @@ function renderLiveStandings() {
     .join('');
 }
 
+function createKickerSVG(jerseyColor) {
+  return `
+    <svg class="kicker-svg" viewBox="0 0 44 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <ellipse cx="24" cy="10" rx="8" ry="9" fill="${jerseyColor}" stroke="#2a2a2a" stroke-width="1"/>
+      <rect x="11" y="8" width="18" height="5" rx="2" fill="#fafafa" opacity="0.9"/>
+      <rect x="16" y="18" width="16" height="20" rx="4" fill="${jerseyColor}" stroke="#2a2a2a" stroke-width="1"/>
+      <rect x="18" y="22" width="12" height="3" rx="1" fill="rgba(255,255,255,0.35)"/>
+      <rect x="13" y="36" width="9" height="16" rx="3" fill="#f5f0e6" stroke="#2a2a2a" stroke-width="1"/>
+      <rect x="24" y="36" width="9" height="16" rx="3" fill="#f5f0e6" stroke="#2a2a2a" stroke-width="1" class="kicker-kick-leg"/>
+      <rect x="10" y="20" width="7" height="5" rx="2" fill="${jerseyColor}" transform="rotate(-28 13 22)"/>
+    </svg>`;
+}
+
+function getRelativeCenter(el, container) {
+  const rect = el.getBoundingClientRect();
+  const base = container.getBoundingClientRect();
+  return {
+    x: rect.left - base.left + rect.width / 2,
+    y: rect.top - base.top + rect.height / 2,
+  };
+}
+
+function getGoalTarget() {
+  const posts = fieldScene.querySelector('.goal-posts');
+  const rect = posts.getBoundingClientRect();
+  const base = fieldScene.getBoundingClientRect();
+  return {
+    x: rect.left - base.left + rect.width / 2,
+    y: rect.top - base.top + rect.height * 0.18,
+  };
+}
+
 function buildFieldScene() {
   kickerLanes.innerHTML = state.kickers
     .map((kicker) => {
@@ -150,8 +184,12 @@ function buildFieldScene() {
           </div>
           <div class="lane-field">
             <div class="hash-mark"></div>
-            <div class="kicker-figure" aria-hidden="true">🏈</div>
-            <div class="kick-ball" aria-hidden="true"></div>
+            <div class="kick-setup">
+              <div class="kicker-player">${createKickerSVG(color)}</div>
+              <div class="ball-tee">
+                <div class="tee-ball" aria-hidden="true"></div>
+              </div>
+            </div>
           </div>
           <p class="lane-name">${escapeHtml(kicker.name)}</p>
         </div>`;
@@ -161,8 +199,8 @@ function buildFieldScene() {
   state.kickers.forEach((kicker) => {
     kicker.laneEl = kickerLanes.querySelector(`[data-index="${kicker.index}"]`);
     kicker.makesEl = kicker.laneEl.querySelector('[data-makes]');
-    kicker.ballEl = kicker.laneEl.querySelector('.kick-ball');
-    kicker.figureEl = kicker.laneEl.querySelector('.kicker-figure');
+    kicker.playerEl = kicker.laneEl.querySelector('.kicker-player');
+    kicker.teeBallEl = kicker.laneEl.querySelector('.tee-ball');
   });
 }
 
@@ -175,8 +213,8 @@ function initKickers() {
     misses: 0,
     laneEl: null,
     makesEl: null,
-    ballEl: null,
-    figureEl: null,
+    playerEl: null,
+    teeBallEl: null,
   }));
 }
 
@@ -215,20 +253,34 @@ function wait(ms) {
 
 async function animateKick(kicker, isMake) {
   const lane = kicker.laneEl;
-  const ball = kicker.ballEl;
-  const figure = kicker.figureEl;
-  if (!lane || !ball) return;
+  const player = kicker.playerEl;
+  const teeBall = kicker.teeBallEl;
+  if (!lane || !player || !teeBall) return;
 
   lane.classList.add('kicking');
-  figure.classList.add('kicking');
+  player.classList.add('running');
 
-  const drift = (Math.random() - 0.5) * 36;
-  ball.style.setProperty('--kick-drift', `${drift}px`);
-  ball.classList.remove('make', 'miss', 'flying');
-  void ball.offsetWidth;
-  ball.classList.add('flying', isMake ? 'make' : 'miss');
+  await wait(520);
 
-  await wait(isMake ? 950 : 850);
+  player.classList.remove('running');
+  player.classList.add('kicking');
+  await wait(180);
+
+  const start = getRelativeCenter(teeBall, fieldScene);
+  const goal = getGoalTarget();
+  const dx = goal.x - start.x;
+  const dy = goal.y - start.y;
+
+  teeBall.classList.add('hidden');
+  flightBall.classList.remove('hidden', 'flying');
+  flightBall.style.left = `${start.x}px`;
+  flightBall.style.top = `${start.y}px`;
+  flightBall.style.setProperty('--fly-dx', `${dx}px`);
+  flightBall.style.setProperty('--fly-dy', `${dy}px`);
+  void flightBall.offsetWidth;
+  flightBall.classList.add('flying');
+
+  await wait(920);
 
   if (isMake) {
     showKickAnnounce('GOOD!', 'make');
@@ -241,8 +293,11 @@ async function animateKick(kicker, isMake) {
   await wait(650);
 
   lane.classList.remove('kicking', 'flash-make', 'flash-miss');
-  figure.classList.remove('kicking');
-  ball.classList.remove('flying', 'make', 'miss');
+  player.classList.remove('kicking', 'running');
+  player.style.transform = '';
+  flightBall.classList.remove('flying');
+  flightBall.classList.add('hidden');
+  teeBall.classList.remove('hidden');
   hideKickAnnounce();
 }
 

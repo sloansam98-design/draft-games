@@ -397,7 +397,7 @@ body {
 
 .field-scene {
   position: relative;
-  min-height: 340px;
+  min-height: 380px;
   border-radius: 14px;
   overflow: hidden;
   background:
@@ -538,7 +538,7 @@ body {
 .lane-field {
   position: relative;
   width: 100%;
-  height: 110px;
+  height: 130px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -546,33 +546,83 @@ body {
 
 .hash-mark {
   position: absolute;
-  bottom: 18px;
+  bottom: 22px;
   width: 2px;
   height: 14px;
   background: var(--field-line);
   opacity: 0.7;
 }
 
-.kicker-figure {
-  font-size: 1.35rem;
-  transform: rotate(-25deg);
-  transition: transform 0.2s ease;
-  z-index: 1;
+.kick-setup {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
-.kicker-figure.kicking {
-  animation: kickWindup 0.35s ease-in-out;
-}
-
-@keyframes kickWindup {
-  0% { transform: rotate(-25deg); }
-  40% { transform: rotate(-45deg) translateY(4px); }
-  100% { transform: rotate(-15deg) translateY(-2px); }
-}
-
-.kick-ball {
+.kicker-player {
   position: absolute;
-  bottom: 28px;
+  bottom: 4px;
+  left: 50%;
+  width: 34px;
+  height: 46px;
+  margin-left: -17px;
+  z-index: 2;
+  transform: translateY(0);
+}
+
+.kicker-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+.kicker-player.running {
+  animation: kickerRunUp 0.52s ease-out forwards;
+}
+
+.kicker-player.kicking .kicker-kick-leg {
+  animation: kickerLegSwing 0.22s ease-out forwards;
+  transform-origin: 28px 36px;
+}
+
+@keyframes kickerRunUp {
+  0% { transform: translateY(0); }
+  80% { transform: translateY(-42px); }
+  100% { transform: translateY(-38px); }
+}
+
+@keyframes kickerLegSwing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-38deg); }
+}
+
+.ball-tee {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  width: 16px;
+  height: 10px;
+  margin-left: -8px;
+  z-index: 3;
+}
+
+.ball-tee::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 14px;
+  height: 3px;
+  margin-left: -7px;
+  background: #f5f0e6;
+  border-radius: 1px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.tee-ball {
+  position: absolute;
+  bottom: 3px;
   left: 50%;
   width: 14px;
   height: 9px;
@@ -580,11 +630,10 @@ body {
   background: #8B4513;
   border-radius: 50% 50% 45% 45%;
   border: 1px solid #5c2e0a;
-  opacity: 0;
-  z-index: 2;
+  z-index: 1;
 }
 
-.kick-ball::after {
+.tee-ball::after {
   content: '';
   position: absolute;
   inset: 1px 3px;
@@ -592,41 +641,49 @@ body {
   border-radius: inherit;
 }
 
-.kick-ball.flying {
-  opacity: 1;
+.tee-ball.hidden {
+  opacity: 0;
 }
 
-.kick-ball.flying.make {
-  animation: ballMake 0.95s ease-out forwards;
+.flight-ball {
+  position: absolute;
+  width: 14px;
+  height: 9px;
+  margin-left: -7px;
+  margin-top: -4px;
+  background: #8B4513;
+  border-radius: 50% 50% 45% 45%;
+  border: 1px solid #5c2e0a;
+  z-index: 6;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
-.kick-ball.flying.miss {
-  animation: ballMiss 0.85s ease-out forwards;
+.flight-ball::after {
+  content: '';
+  position: absolute;
+  inset: 1px 3px;
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: inherit;
 }
 
-@keyframes ballMake {
+.flight-ball.flying {
+  animation: ballThroughUprights 0.92s cubic-bezier(0.22, 0.55, 0.25, 1) forwards;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+}
+
+@keyframes ballThroughUprights {
   0% {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) scale(1) rotate(0deg);
     opacity: 1;
   }
-  45% {
-    transform: translate(calc(var(--kick-drift) * 0.4), -90px) scale(0.85);
+  55% {
+    transform: translate(calc(var(--fly-dx) * 0.55), calc(var(--fly-dy) * 0.55)) scale(0.82) rotate(-18deg);
     opacity: 1;
   }
   100% {
-    transform: translate(calc(var(--kick-drift) * 0.6), -165px) scale(0.45);
-    opacity: 0;
-  }
-}
-
-@keyframes ballMiss {
-  0% {
-    transform: translate(0, 0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(calc(var(--kick-drift) + 28px), -70px) scale(0.6);
-    opacity: 0;
+    transform: translate(var(--fly-dx), var(--fly-dy)) scale(0.45) rotate(-32deg);
+    opacity: 0.85;
   }
 }
 
@@ -768,9 +825,9 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .kick-ball.flying.make,
-  .kick-ball.flying.miss,
-  .kicker-figure.kicking,
+  .kicker-player.running,
+  .kicker-player.kicking .kicker-kick-leg,
+  .flight-ball.flying,
   .kick-announce,
   .kicker-lane.flash-make,
   .kicker-lane.flash-miss {
