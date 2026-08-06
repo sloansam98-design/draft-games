@@ -160,23 +160,116 @@ body {
 
 .team-item {
   display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.65rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.team-item.expanded {
+  border-color: rgba(245, 200, 66, 0.35);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.team-item-main {
+  display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.55rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.team-kicker-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.team-kicker-icon svg {
+  display: block;
 }
 
 .team-color {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .team-name {
   flex: 1;
   font-weight: 500;
+  word-break: break-word;
+}
+
+.customize-team-btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid rgba(245, 200, 66, 0.25);
+  border-radius: 8px;
+  background: rgba(245, 200, 66, 0.08);
+  color: var(--gold);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.customize-team-btn:hover {
+  background: rgba(245, 200, 66, 0.15);
+}
+
+.team-customize-panel {
+  display: grid;
+  gap: 0.65rem;
+  padding-top: 0.35rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.customize-group {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.customize-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.clothing-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.clothing-btn {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.clothing-btn.active {
+  background: rgba(245, 200, 66, 0.15);
+  border-color: rgba(245, 200, 66, 0.4);
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.customize-preview {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}
+
+.customize-preview .kicker-svg {
+  width: 88px;
+  height: 116px;
 }
 
 .remove-team-btn {
@@ -667,9 +760,14 @@ body {
   border-radius: inherit;
 }
 
-.flight-ball.flying {
+.flight-ball.flying.make {
   animation: ballThroughUprights 0.92s cubic-bezier(0.22, 0.55, 0.25, 1) forwards;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 0 6px rgba(102, 187, 106, 0.45));
+}
+
+.flight-ball.flying.miss {
+  animation: ballWideMiss 0.92s cubic-bezier(0.28, 0.45, 0.35, 1) forwards;
+  filter: drop-shadow(0 0 4px rgba(239, 83, 80, 0.35));
 }
 
 @keyframes ballThroughUprights {
@@ -684,6 +782,21 @@ body {
   100% {
     transform: translate(var(--fly-dx), var(--fly-dy)) scale(0.45) rotate(-32deg);
     opacity: 0.85;
+  }
+}
+
+@keyframes ballWideMiss {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  60% {
+    transform: translate(calc(var(--fly-dx) * 0.72), calc(var(--fly-dy) * 0.72)) scale(0.72) rotate(-14deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--fly-dx), var(--fly-dy)) scale(0.55) rotate(-20deg);
+    opacity: 0;
   }
 }
 
@@ -827,7 +940,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .kicker-player.running,
   .kicker-player.kicking .kicker-kick-leg,
-  .flight-ball.flying,
+  .flight-ball.flying.make,
+  .flight-ball.flying.miss,
   .kick-announce,
   .kicker-lane.flash-make,
   .kicker-lane.flash-miss {

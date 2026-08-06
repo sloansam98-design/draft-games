@@ -15,6 +15,8 @@ const MAKE_BASE = 0.72;
 
 const state = {
   teams: [],
+  kickerCustomizations: [],
+  expandedCustomizeIndex: -1,
   kicksPerTeam: 5,
   gameActive: false,
   kickers: [],
@@ -68,7 +70,48 @@ function shuffleArray(items) {
   return arr;
 }
 
+function getJerseyColor(index) {
+  return TEAM_COLORS[index % TEAM_COLORS.length];
+}
+
+function getKickerStyle(index) {
+  return normalizeKickerStyle(state.kickerCustomizations[index] || DEFAULT_KICKER_STYLE);
+}
+
+function syncKickerCustomizations() {
+  state.kickerCustomizations = state.teams.map(
+    (_, index) => normalizeKickerStyle(state.kickerCustomizations[index] || DEFAULT_KICKER_STYLE)
+  );
+}
+
+function setKickerStyle(index, key, value) {
+  const current = getKickerStyle(index);
+  current[key] = value;
+  state.kickerCustomizations[index] = current;
+  renderTeamList();
+}
+
+function renderClothingOptions(index, type, options, selectedId) {
+  return `
+    <div class="clothing-options" role="group" aria-label="Choose ${type}">
+      ${options
+        .map(
+          (option) => `
+          <button
+            type="button"
+            class="clothing-btn ${selectedId === option.id ? 'active' : ''}"
+            data-index="${index}"
+            data-style-type="${type}"
+            data-style-id="${option.id}"
+          >${option.label}</button>`
+        )
+        .join('')}
+    </div>`;
+}
+
 function renderTeamList() {
+  syncKickerCustomizations();
+
   if (state.teams.length === 0) {
     teamList.innerHTML = '<p class="empty-teams">No teams yet — add some above!</p>';
     startGameBtn.disabled = true;
@@ -77,14 +120,44 @@ function renderTeamList() {
   }
 
   teamList.innerHTML = state.teams
-    .map(
-      (team, i) => `
-      <div class="team-item">
-        <span class="team-color" style="background:${TEAM_COLORS[i % TEAM_COLORS.length]}"></span>
-        <span class="team-name">${escapeHtml(team)}</span>
-        <button type="button" class="remove-team-btn" data-index="${i}" aria-label="Remove ${escapeHtml(team)}">×</button>
-      </div>`
-    )
+    .map((team, i) => {
+      const style = getKickerStyle(i);
+      const isExpanded = state.expandedCustomizeIndex === i;
+      return `
+      <div class="team-item ${isExpanded ? 'expanded' : ''}" data-index="${i}">
+        <div class="team-item-main">
+          <span class="team-kicker-icon">${createMiniKickerSVG(getJerseyColor(i), style, 34)}</span>
+          <span class="team-color" style="background:${getJerseyColor(i)}"></span>
+          <span class="team-name">${escapeHtml(team)}</span>
+          <button type="button" class="customize-team-btn" data-index="${i}">
+            ${isExpanded ? 'Done' : 'Style Kicker'}
+          </button>
+          <button type="button" class="remove-team-btn" data-index="${i}" aria-label="Remove ${escapeHtml(team)}">×</button>
+        </div>
+        ${
+          isExpanded
+            ? `
+          <div class="team-customize-panel">
+            <div class="customize-group">
+              <span class="customize-label">Headwear</span>
+              ${renderClothingOptions(i, 'hat', HAT_OPTIONS, style.hat)}
+            </div>
+            <div class="customize-group">
+              <span class="customize-label">Accessory</span>
+              ${renderClothingOptions(i, 'accessory', ACCESSORY_OPTIONS, style.accessory)}
+            </div>
+            <div class="customize-group">
+              <span class="customize-label">Jersey Style</span>
+              ${renderClothingOptions(i, 'outfit', OUTFIT_OPTIONS, style.outfit)}
+            </div>
+            <div class="customize-preview">
+              ${createKickerSVG(getJerseyColor(i), style)}
+            </div>
+          </div>`
+            : ''
+        }
+      </div>`;
+    })
     .join('');
 
   startGameBtn.disabled = state.teams.length < 2;
@@ -103,17 +176,26 @@ function addTeam(name) {
     return false;
   }
   state.teams.push(trimmed);
+  state.kickerCustomizations.push({ ...DEFAULT_KICKER_STYLE });
   renderTeamList();
   return true;
 }
 
 function removeTeam(index) {
   state.teams.splice(index, 1);
+  state.kickerCustomizations.splice(index, 1);
+  if (state.expandedCustomizeIndex === index) {
+    state.expandedCustomizeIndex = -1;
+  } else if (state.expandedCustomizeIndex > index) {
+    state.expandedCustomizeIndex -= 1;
+  }
   renderTeamList();
 }
 
 function setTeams(teams) {
   state.teams = [...teams];
+  state.kickerCustomizations = teams.map(() => ({ ...DEFAULT_KICKER_STYLE }));
+  state.expandedCustomizeIndex = -1;
   renderTeamList();
 }
 
@@ -140,19 +222,6 @@ function renderLiveStandings() {
     .join('');
 }
 
-function createKickerSVG(jerseyColor) {
-  return `
-    <svg class="kicker-svg" viewBox="0 0 44 58" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <ellipse cx="24" cy="10" rx="8" ry="9" fill="${jerseyColor}" stroke="#2a2a2a" stroke-width="1"/>
-      <rect x="11" y="8" width="18" height="5" rx="2" fill="#fafafa" opacity="0.9"/>
-      <rect x="16" y="18" width="16" height="20" rx="4" fill="${jerseyColor}" stroke="#2a2a2a" stroke-width="1"/>
-      <rect x="18" y="22" width="12" height="3" rx="1" fill="rgba(255,255,255,0.35)"/>
-      <rect x="13" y="36" width="9" height="16" rx="3" fill="#f5f0e6" stroke="#2a2a2a" stroke-width="1"/>
-      <rect x="24" y="36" width="9" height="16" rx="3" fill="#f5f0e6" stroke="#2a2a2a" stroke-width="1" class="kicker-kick-leg"/>
-      <rect x="10" y="20" width="7" height="5" rx="2" fill="${jerseyColor}" transform="rotate(-28 13 22)"/>
-    </svg>`;
-}
-
 function getRelativeCenter(el, container) {
   const rect = el.getBoundingClientRect();
   const base = container.getBoundingClientRect();
@@ -172,10 +241,24 @@ function getGoalTarget() {
   };
 }
 
+function getMissTarget(side) {
+  const posts = fieldScene.querySelector('.goal-posts');
+  const rect = posts.getBoundingClientRect();
+  const base = fieldScene.getBoundingClientRect();
+  const centerX = rect.left - base.left + rect.width / 2;
+  const centerY = rect.top - base.top + rect.height * 0.18;
+  const wideOffset = rect.width * 0.48;
+  return {
+    x: centerX + (side === 'left' ? -wideOffset : wideOffset),
+    y: centerY + rect.height * 0.06,
+  };
+}
+
 function buildFieldScene() {
   kickerLanes.innerHTML = state.kickers
     .map((kicker) => {
-      const color = TEAM_COLORS[kicker.index % TEAM_COLORS.length];
+      const color = getJerseyColor(kicker.index);
+      const style = getKickerStyle(kicker.index);
       return `
         <div class="kicker-lane" data-index="${kicker.index}" style="--team-color:${color}">
           <div class="lane-score">
@@ -185,7 +268,7 @@ function buildFieldScene() {
           <div class="lane-field">
             <div class="hash-mark"></div>
             <div class="kick-setup">
-              <div class="kicker-player">${createKickerSVG(color)}</div>
+              <div class="kicker-player">${createKickerSVG(color, style)}</div>
               <div class="ball-tee">
                 <div class="tee-ball" aria-hidden="true"></div>
               </div>
@@ -267,18 +350,20 @@ async function animateKick(kicker, isMake) {
   await wait(180);
 
   const start = getRelativeCenter(teeBall, fieldScene);
-  const goal = getGoalTarget();
-  const dx = goal.x - start.x;
-  const dy = goal.y - start.y;
+  const end = isMake
+    ? getGoalTarget()
+    : getMissTarget(Math.random() > 0.5 ? 'right' : 'left');
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
 
   teeBall.classList.add('hidden');
-  flightBall.classList.remove('hidden', 'flying');
+  flightBall.classList.remove('hidden', 'flying', 'make', 'miss');
   flightBall.style.left = `${start.x}px`;
   flightBall.style.top = `${start.y}px`;
   flightBall.style.setProperty('--fly-dx', `${dx}px`);
   flightBall.style.setProperty('--fly-dy', `${dy}px`);
   void flightBall.offsetWidth;
-  flightBall.classList.add('flying');
+  flightBall.classList.add('flying', isMake ? 'make' : 'miss');
 
   await wait(920);
 
@@ -295,7 +380,7 @@ async function animateKick(kicker, isMake) {
   lane.classList.remove('kicking', 'flash-make', 'flash-miss');
   player.classList.remove('kicking', 'running');
   player.style.transform = '';
-  flightBall.classList.remove('flying');
+  flightBall.classList.remove('flying', 'make', 'miss');
   flightBall.classList.add('hidden');
   teeBall.classList.remove('hidden');
   hideKickAnnounce();
@@ -429,13 +514,40 @@ teamInput.addEventListener('keydown', (e) => {
 });
 
 teamList.addEventListener('click', (e) => {
-  const btn = e.target.closest('.remove-team-btn');
-  if (btn) removeTeam(Number(btn.dataset.index));
+  const removeBtn = e.target.closest('.remove-team-btn');
+  if (removeBtn) {
+    removeTeam(Number(removeBtn.dataset.index));
+    return;
+  }
+
+  const customizeBtn = e.target.closest('.customize-team-btn');
+  if (customizeBtn) {
+    const index = Number(customizeBtn.dataset.index);
+    state.expandedCustomizeIndex = state.expandedCustomizeIndex === index ? -1 : index;
+    renderTeamList();
+    return;
+  }
+
+  const styleBtn = e.target.closest('.clothing-btn');
+  if (styleBtn) {
+    setKickerStyle(
+      Number(styleBtn.dataset.index),
+      styleBtn.dataset.styleType,
+      styleBtn.dataset.styleId
+    );
+  }
 });
 
 randomizeOrderBtn.addEventListener('click', () => {
   if (state.teams.length < 2) return;
-  state.teams = shuffleArray(state.teams);
+  const pairs = state.teams.map((team, index) => ({
+    team,
+    style: getKickerStyle(index),
+  }));
+  const shuffled = shuffleArray(pairs);
+  state.teams = shuffled.map((pair) => pair.team);
+  state.kickerCustomizations = shuffled.map((pair) => ({ ...pair.style }));
+  state.expandedCustomizeIndex = -1;
   renderTeamList();
   showToast('Order shuffled!');
 });
