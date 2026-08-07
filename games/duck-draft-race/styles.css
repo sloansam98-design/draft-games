@@ -170,9 +170,15 @@ body {
 }
 
 .logo {
-  font-size: 3.5rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  flex-shrink: 0;
   animation: bob 2.5s ease-in-out infinite;
+}
+
+.logo--mascot img {
+  display: block;
+  width: clamp(58px, 14vw, 72px);
+  height: auto;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 
 @keyframes bob {

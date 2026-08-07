@@ -167,43 +167,75 @@ body {
   animation: fadeUp 0.8s var(--ease-out) 0.06s both;
 }
 
-.hub-hero__badges {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0.7rem;
-  flex-wrap: wrap;
+.hub-mascot {
   position: relative;
   z-index: 1;
-}
-
-.hub-hero__badge {
+  width: min(100%, 220px);
+  aspect-ratio: 6 / 7;
   display: grid;
   place-items: center;
-  width: 62px;
-  height: 62px;
-  font-size: 1.9rem;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid var(--border-strong);
-  border-radius: 18px;
-  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  animation: badgeFloat 5.5s ease-in-out infinite;
-  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s ease, border-color 0.3s ease;
+  animation: mascotFloat 5.5s ease-in-out infinite;
 }
 
-.hub-hero__badge:hover {
-  transform: translateY(-6px) scale(1.05);
-  box-shadow: var(--shadow-md);
+.hub-mascot__ring {
+  position: absolute;
+  inset: 8% 10%;
+  border-radius: 50%;
+  border: 1px solid rgba(52, 245, 168, 0.22);
+  background: radial-gradient(circle, rgba(52, 245, 168, 0.1) 0%, transparent 68%);
+  animation: mascotRing 6s ease-in-out infinite;
 }
 
-.hub-hero__badge--football { border-color: rgba(255, 140, 80, 0.35); animation-delay: 0s; --badge-y: 0; --badge-tilt: -3deg; }
-.hub-hero__badge--basketball { border-color: rgba(255, 160, 60, 0.35); animation-delay: 0.45s; --badge-y: 6px; --badge-tilt: 5deg; }
-.hub-hero__badge--baseball { border-color: rgba(255, 100, 100, 0.35); animation-delay: 0.9s; --badge-y: 0; --badge-tilt: 2deg; }
-.hub-hero__badge--hockey { border-color: rgba(80, 180, 255, 0.35); animation-delay: 1.35s; --badge-y: 6px; --badge-tilt: -5deg; }
+.hub-mascot__frame {
+  position: relative;
+  width: 72%;
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.45));
+}
 
-@keyframes badgeFloat {
-  0%, 100% { transform: translateY(var(--badge-y, 0)) rotate(var(--badge-tilt, 0)); }
-  50% { transform: translateY(calc(var(--badge-y, 0px) - 7px)) rotate(calc(var(--badge-tilt, 0deg) * -1)); }
+.hub-mascot__img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hub-mascot__spark {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 16px rgba(52, 245, 168, 0.65);
+  opacity: 0.75;
+  animation: mascotSpark 3.2s ease-in-out infinite;
+}
+
+.hub-mascot__spark--1 {
+  top: 18%;
+  right: 12%;
+  animation-delay: 0s;
+}
+
+.hub-mascot__spark--2 {
+  bottom: 24%;
+  left: 8%;
+  width: 6px;
+  height: 6px;
+  animation-delay: 1.4s;
+}
+
+@keyframes mascotFloat {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+
+@keyframes mascotRing {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes mascotSpark {
+  0%, 100% { transform: scale(1); opacity: 0.45; }
+  50% { transform: scale(1.35); opacity: 1; }
 }
 
 .hub-title {
@@ -706,7 +738,7 @@ a.game-card:focus-visible .game-card-arrow {
 
   .hub-hero__visual { justify-content: flex-start; }
   .hub-hero__content { align-items: flex-start; }
-  .hub-hero__badges { justify-content: flex-start; }
+  .hub-mascot { margin-inline: 0; }
   .hub-tagline { margin-inline: 0; }
   .sport-badges { justify-content: flex-start; margin-inline: 0; }
   .hub-intro { text-align: left; margin-inline: 0; }
@@ -781,10 +813,8 @@ a.game-card:focus-visible .game-card-arrow {
 }
 
 @media (max-width: 479px) {
-  .hub-hero__badge {
-    width: 54px;
-    height: 54px;
-    font-size: 1.55rem;
+  .hub-mascot {
+    width: min(100%, 180px);
   }
 
   .game-grid--soon {
@@ -814,7 +844,9 @@ a.game-card:focus-visible .game-card-arrow {
     animation: none;
   }
 
-  .hub-hero__badge,
+  .hub-mascot,
+  .hub-mascot__ring,
+  .hub-mascot__spark,
   .page-bg__beam,
   .status-dot {
     animation: none;
@@ -824,7 +856,6 @@ a.game-card:focus-visible .game-card-arrow {
   .game-card-icon,
   .game-card-arrow,
   .sport-badge,
-  .hub-hero__badge,
   .game-card::after {
     transition: none;
   }
