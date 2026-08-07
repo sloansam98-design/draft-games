@@ -7,27 +7,29 @@
   <meta name="description" content="Fun mini-games to decide your fantasy draft order. Works for football, basketball, hockey, baseball, and more.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="hub.css">
 </head>
 <body>
   <div class="page-bg" aria-hidden="true">
     <div class="page-bg__mesh"></div>
-    <div class="page-bg__grid"></div>
-    <div class="page-bg__orb page-bg__orb--1"></div>
-    <div class="page-bg__orb page-bg__orb--2"></div>
-    <div class="page-bg__orb page-bg__orb--3"></div>
+    <div class="page-bg__noise"></div>
+    <div class="page-bg__beam page-bg__beam--1"></div>
+    <div class="page-bg__beam page-bg__beam--2"></div>
   </div>
 
   <div class="hub-shell">
     <header class="hub-hero">
-      <div class="hub-hero__badges" aria-hidden="true">
-        <div class="hub-hero__badge hub-hero__badge--football">🏈</div>
-        <div class="hub-hero__badge hub-hero__badge--basketball">🏀</div>
-        <div class="hub-hero__badge hub-hero__badge--baseball">⚾</div>
-        <div class="hub-hero__badge hub-hero__badge--hockey">🏒</div>
+      <div class="hub-hero__visual">
+        <div class="hub-hero__badges" aria-hidden="true">
+          <div class="hub-hero__badge hub-hero__badge--football">🏈</div>
+          <div class="hub-hero__badge hub-hero__badge--basketball">🏀</div>
+          <div class="hub-hero__badge hub-hero__badge--baseball">⚾</div>
+          <div class="hub-hero__badge hub-hero__badge--hockey">🏒</div>
+        </div>
       </div>
       <div class="hub-hero__content">
+        <p class="hub-hero__label">Fantasy draft order hub</p>
         <h1 class="hub-title">Draft Games</h1>
         <p class="hub-tagline">Fun ways to settle your fantasy draft order</p>
         <ul class="sport-badges" aria-label="Supported sports">
@@ -42,88 +44,152 @@
     <main class="hub-main">
       <p class="hub-intro">Any sport, any league — import your teams, pick a game, and let the chaos decide who picks first.</p>
 
-      <section class="hub-section" aria-labelledby="live-heading">
+      <section class="hub-section hub-section--live" aria-labelledby="live-heading">
         <div class="hub-section__head">
-          <h2 id="live-heading" class="hub-section__title">Play now</h2>
+          <div>
+            <p class="hub-section__eyebrow">Ready to play</p>
+            <h2 id="live-heading" class="hub-section__title">Play now</h2>
+          </div>
           <span class="hub-section__count">5 games</span>
         </div>
 
         <div class="game-grid game-grid--live">
-          <a href="games/duck-draft-race/index.html" class="game-card game-card--live">
-            <span class="game-card-status">Play Now</span>
-            <div class="game-card-icon game-card-icon--img" aria-hidden="true">
-              <img src="assets/duck-race-icon.svg" alt="" width="52" height="31">
+          <a href="games/duck-draft-race/index.html" class="game-card game-card--live game-card--featured">
+            <div class="game-card__shine" aria-hidden="true"></div>
+            <div class="game-card__header">
+              <div class="game-card-icon game-card-icon--img" aria-hidden="true">
+                <img src="assets/duck-race-icon.svg" alt="" width="52" height="31">
+              </div>
+              <span class="game-card-status"><span class="status-dot" aria-hidden="true"></span>Live</span>
             </div>
-            <h3 class="game-card-title">Duck Race</h3>
-            <p class="game-card-desc">Rubber ducks paddle across the pond. Fastest duck wins the #1 pick. Style your duck, dodge obstacles, and pray your squad can swim.</p>
-            <span class="game-card-cta">Start Racing →</span>
+            <div class="game-card__body">
+              <h3 class="game-card-title">Duck Race</h3>
+              <p class="game-card-desc">Rubber ducks paddle across the pond. Fastest duck wins the #1 pick. Style your duck, dodge obstacles, and pray your squad can swim.</p>
+            </div>
+            <div class="game-card__footer">
+              <span class="game-card-cta">Start Racing</span>
+              <span class="game-card-arrow" aria-hidden="true">→</span>
+            </div>
           </a>
 
           <a href="games/draft-wheel/index.html" class="game-card game-card--live">
-            <span class="game-card-status">Play Now</span>
-            <div class="game-card-icon game-card-icon--img" aria-hidden="true">
-              <img src="assets/draft-wheel-icon.svg" alt="" width="52" height="52">
+            <div class="game-card__shine" aria-hidden="true"></div>
+            <div class="game-card__header">
+              <div class="game-card-icon game-card-icon--img" aria-hidden="true">
+                <img src="assets/draft-wheel-icon.svg" alt="" width="52" height="52">
+              </div>
+              <span class="game-card-status"><span class="status-dot" aria-hidden="true"></span>Live</span>
             </div>
-            <h3 class="game-card-title">Draft Wheel</h3>
-            <p class="game-card-desc">Load your team names and spin the wheel. Each spin assigns the next draft slot until every pick is claimed.</p>
-            <span class="game-card-cta">Start Spinning →</span>
+            <div class="game-card__body">
+              <h3 class="game-card-title">Draft Wheel</h3>
+              <p class="game-card-desc">Load your team names and spin the wheel. Each spin assigns the next draft slot until every pick is claimed.</p>
+            </div>
+            <div class="game-card__footer">
+              <span class="game-card-cta">Start Spinning</span>
+              <span class="game-card-arrow" aria-hidden="true">→</span>
+            </div>
           </a>
 
           <a href="games/coin-flip-showdown/index.html" class="game-card game-card--live">
-            <span class="game-card-status">Play Now</span>
-            <div class="game-card-icon" aria-hidden="true">🪙</div>
-            <h3 class="game-card-title">Coin Flip Showdown</h3>
-            <p class="game-card-desc">Winners bracket coin flips with consolation losers brackets. Keep winning for #1 — lose and flip again to settle your pick.</p>
-            <span class="game-card-cta">Start Flipping →</span>
+            <div class="game-card__shine" aria-hidden="true"></div>
+            <div class="game-card__header">
+              <div class="game-card-icon" aria-hidden="true">🪙</div>
+              <span class="game-card-status"><span class="status-dot" aria-hidden="true"></span>Live</span>
+            </div>
+            <div class="game-card__body">
+              <h3 class="game-card-title">Coin Flip Showdown</h3>
+              <p class="game-card-desc">Winners bracket coin flips with consolation losers brackets. Keep winning for #1 — lose and flip again to settle your pick.</p>
+            </div>
+            <div class="game-card__footer">
+              <span class="game-card-cta">Start Flipping</span>
+              <span class="game-card-arrow" aria-hidden="true">→</span>
+            </div>
           </a>
 
           <a href="games/slot-machine-draft/index.html" class="game-card game-card--live">
-            <span class="game-card-status">Play Now</span>
-            <div class="game-card-icon" aria-hidden="true">🎰</div>
-            <h3 class="game-card-title">Slot Machine Draft</h3>
-            <p class="game-card-desc">Pull the lever and watch the reels lock in your draft order. One jackpot per pick — high stakes, zero skill, maximum chaos.</p>
-            <span class="game-card-cta">Start Pulling →</span>
+            <div class="game-card__shine" aria-hidden="true"></div>
+            <div class="game-card__header">
+              <div class="game-card-icon" aria-hidden="true">🎰</div>
+              <span class="game-card-status"><span class="status-dot" aria-hidden="true"></span>Live</span>
+            </div>
+            <div class="game-card__body">
+              <h3 class="game-card-title">Slot Machine Draft</h3>
+              <p class="game-card-desc">Pull the lever and watch the reels lock in your draft order. One jackpot per pick — high stakes, zero skill, maximum chaos.</p>
+            </div>
+            <div class="game-card__footer">
+              <span class="game-card-cta">Start Pulling</span>
+              <span class="game-card-arrow" aria-hidden="true">→</span>
+            </div>
           </a>
 
           <a href="games/field-goal-frenzy/index.html" class="game-card game-card--live">
-            <span class="game-card-status">Play Now</span>
-            <div class="game-card-icon" aria-hidden="true">🏈</div>
-            <h3 class="game-card-title">Field Goal Frenzy</h3>
-            <p class="game-card-desc">Step up and kick from the hash marks. Most field goals wins the top pick — built for football leagues.</p>
-            <span class="game-card-cta">Start Kicking →</span>
+            <div class="game-card__shine" aria-hidden="true"></div>
+            <div class="game-card__header">
+              <div class="game-card-icon" aria-hidden="true">🏈</div>
+              <span class="game-card-status"><span class="status-dot" aria-hidden="true"></span>Live</span>
+            </div>
+            <div class="game-card__body">
+              <h3 class="game-card-title">Field Goal Frenzy</h3>
+              <p class="game-card-desc">Step up and kick from the hash marks. Most field goals wins the top pick — built for football leagues.</p>
+            </div>
+            <div class="game-card__footer">
+              <span class="game-card-cta">Start Kicking</span>
+              <span class="game-card-arrow" aria-hidden="true">→</span>
+            </div>
           </a>
         </div>
       </section>
 
-      <section class="hub-section" aria-labelledby="soon-heading">
+      <section class="hub-section hub-section--soon" aria-labelledby="soon-heading">
         <div class="hub-section__head">
-          <h2 id="soon-heading" class="hub-section__title">Coming soon</h2>
+          <div>
+            <p class="hub-section__eyebrow">On deck</p>
+            <h2 id="soon-heading" class="hub-section__title">Coming soon</h2>
+          </div>
           <span class="hub-section__count">3 in the works</span>
         </div>
 
         <div class="game-grid game-grid--soon">
           <article class="game-card game-card--soon">
-            <span class="game-card-status">Coming Soon</span>
-            <div class="game-card-icon" aria-hidden="true">⚾</div>
-            <h3 class="game-card-title">Home Run Derby</h3>
-            <p class="game-card-desc">Each team steps up to the plate. Longest bombs rank the draft order — perfect for baseball leagues.</p>
-            <span class="game-card-cta">Coming Soon</span>
+            <div class="game-card__header">
+              <div class="game-card-icon" aria-hidden="true">⚾</div>
+              <span class="game-card-status">Soon</span>
+            </div>
+            <div class="game-card__body">
+              <h3 class="game-card-title">Home Run Derby</h3>
+              <p class="game-card-desc">Each team steps up to the plate. Longest bombs rank the draft order — perfect for baseball leagues.</p>
+            </div>
+            <div class="game-card__footer">
+              <span class="game-card-cta">Coming Soon</span>
+            </div>
           </article>
 
           <article class="game-card game-card--soon">
-            <span class="game-card-status">Coming Soon</span>
-            <div class="game-card-icon" aria-hidden="true">🏀</div>
-            <h3 class="game-card-title">Free Throw Face-Off</h3>
-            <p class="game-card-desc">Line up at the stripe and shoot. Most buckets wins the top pick — built for basketball leagues.</p>
-            <span class="game-card-cta">Coming Soon</span>
+            <div class="game-card__header">
+              <div class="game-card-icon" aria-hidden="true">🏀</div>
+              <span class="game-card-status">Soon</span>
+            </div>
+            <div class="game-card__body">
+              <h3 class="game-card-title">Free Throw Face-Off</h3>
+              <p class="game-card-desc">Line up at the stripe and shoot. Most buckets wins the top pick — built for basketball leagues.</p>
+            </div>
+            <div class="game-card__footer">
+              <span class="game-card-cta">Coming Soon</span>
+            </div>
           </article>
 
           <article class="game-card game-card--soon">
-            <span class="game-card-status">Coming Soon</span>
-            <div class="game-card-icon" aria-hidden="true">🏒</div>
-            <h3 class="game-card-title">Face-Off Showdown</h3>
-            <p class="game-card-desc">Bracket-style puck drops between teams. Winners advance, losers claim picks from the bottom up.</p>
-            <span class="game-card-cta">Coming Soon</span>
+            <div class="game-card__header">
+              <div class="game-card-icon" aria-hidden="true">🏒</div>
+              <span class="game-card-status">Soon</span>
+            </div>
+            <div class="game-card__body">
+              <h3 class="game-card-title">Face-Off Showdown</h3>
+              <p class="game-card-desc">Bracket-style puck drops between teams. Winners advance, losers claim picks from the bottom up.</p>
+            </div>
+            <div class="game-card__footer">
+              <span class="game-card-cta">Coming Soon</span>
+            </div>
           </article>
         </div>
       </section>
