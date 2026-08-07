@@ -1,70 +1,92 @@
 <svg viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs>
-    <linearGradient id="mascotGlow" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#34f5a8" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#34f5a8" stop-opacity="0"/>
+    <linearGradient id="orbBody" x1="18%" y1="0%" x2="82%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="42%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#34f5a8"/>
     </linearGradient>
-    <linearGradient id="duckBody" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFE566"/>
-      <stop offset="100%" stop-color="#FFD93D"/>
+    <linearGradient id="orbShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.62"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
     </linearGradient>
+    <linearGradient id="groundGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34f5a8" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
 
-  <!-- ground glow -->
-  <ellipse cx="58" cy="128" rx="34" ry="7" fill="url(#mascotGlow)"/>
+  <!-- orbit -->
+  <ellipse cx="60" cy="68" rx="47" ry="14" fill="none" stroke="rgba(52,245,168,0.24)" stroke-width="1.2" transform="rotate(-16 60 68)"/>
+  <ellipse cx="60" cy="68" rx="47" ry="14" fill="none" stroke="rgba(139,92,246,0.2)" stroke-width="1" transform="rotate(22 60 68)"/>
 
-  <!-- tail -->
-  <ellipse cx="18" cy="88" rx="10" ry="7" fill="#EDC72B" opacity="0.55" transform="rotate(-18 18 88)"/>
+  <!-- mini sport orbs -->
+  <g>
+    <circle cx="20" cy="54" r="10" fill="#101522" stroke="rgba(255,140,80,0.5)" stroke-width="1"/>
+    <ellipse cx="20" cy="54" rx="5.5" ry="3.2" fill="#8b4513" transform="rotate(-25 20 54)"/>
+    <path d="M16 51 L24 57" stroke="#f4f6fa" stroke-width="1" opacity="0.55"/>
 
-  <!-- body -->
-  <ellipse cx="52" cy="92" rx="30" ry="18" fill="url(#duckBody)" stroke="#EDC72B" stroke-width="1.4"/>
-  <ellipse cx="52" cy="94" rx="20" ry="9" fill="#EDC72B" opacity="0.22"/>
+    <circle cx="100" cy="46" r="9" fill="#101522" stroke="rgba(255,160,60,0.5)" stroke-width="1"/>
+    <circle cx="100" cy="46" r="5" fill="#e67e22"/>
+    <path d="M95 46 H105 M100 41 V51" stroke="#1a1208" stroke-width="0.8" opacity="0.45"/>
 
-  <!-- ref shirt -->
-  <path d="M28 84 C30 72 42 68 52 68 C62 68 74 72 76 84 C76 92 70 98 52 98 C34 98 28 92 28 84 Z" fill="#f4f6fa"/>
-  <path d="M34 72 L38 98 M46 69 L48 98 M58 69 L60 98 M66 72 L70 98" stroke="#1a1f2e" stroke-width="2.2" stroke-linecap="round"/>
-  <path d="M28 84 C34 88 42 90 52 90 C62 90 70 88 76 84" fill="none" stroke="#d8dde8" stroke-width="1"/>
-
-  <!-- wing -->
-  <ellipse cx="34" cy="86" rx="12" ry="8" fill="#FFC107" opacity="0.75" transform="rotate(-8 34 86)"/>
-
-  <!-- head -->
-  <circle cx="78" cy="58" r="22" fill="url(#duckBody)" stroke="#EDC72B" stroke-width="1.4"/>
-
-  <!-- ref cap -->
-  <path d="M58 48 C62 36 74 32 84 34 C94 36 98 44 96 50 C88 46 72 46 58 48 Z" fill="#1a1f2e"/>
-  <path d="M56 48 C68 44 86 44 98 48 L98 52 C86 49 68 49 56 52 Z" fill="#2a3144"/>
-  <ellipse cx="98" cy="50" rx="8" ry="3" fill="#2a3144"/>
-
-  <!-- beak -->
-  <ellipse cx="96" cy="62" rx="12" ry="7" fill="#FF8C00" stroke="#E07000" stroke-width="1"/>
-  <ellipse cx="101" cy="61" rx="4" ry="2.5" fill="#FFB347" opacity="0.55"/>
-
-  <!-- eye -->
-  <circle cx="82" cy="52" r="4.2" fill="#111"/>
-  <circle cx="83.4" cy="50.8" r="1.5" fill="#fff" opacity="0.85"/>
-
-  <!-- whistle -->
-  <circle cx="72" cy="68" r="3.2" fill="#c9cdd8" stroke="#9aa3b5" stroke-width="0.8"/>
-  <path d="M75 68 L79 66" stroke="#9aa3b5" stroke-width="1.2" stroke-linecap="round"/>
-
-  <!-- clipboard arm -->
-  <path d="M66 78 C72 74 78 72 84 74" stroke="#EDC72B" stroke-width="3" stroke-linecap="round" fill="none"/>
-
-  <!-- clipboard -->
-  <g transform="translate(84 58) rotate(8)">
-    <rect x="0" y="0" width="28" height="36" rx="3" fill="#0a0e18" stroke="#34f5a8" stroke-width="1.4"/>
-    <rect x="3" y="4" width="22" height="28" rx="2" fill="#121826"/>
-    <rect x="11" y="-3" width="6" height="5" rx="1.5" fill="#34f5a8"/>
-    <rect x="6" y="8" width="16" height="5" rx="1.5" fill="rgba(52,245,168,0.18)"/>
-    <rect x="6" y="16" width="16" height="5" rx="1.5" fill="rgba(255,255,255,0.06)"/>
-    <rect x="6" y="24" width="16" height="5" rx="1.5" fill="rgba(255,255,255,0.06)"/>
-    <text x="14" y="12.5" text-anchor="middle" font-family="system-ui,sans-serif" font-size="6.5" font-weight="700" fill="#34f5a8">1</text>
-    <text x="14" y="20.5" text-anchor="middle" font-family="system-ui,sans-serif" font-size="6" font-weight="600" fill="#8b93a8">2</text>
-    <text x="14" y="28.5" text-anchor="middle" font-family="system-ui,sans-serif" font-size="6" font-weight="600" fill="#8b93a8">3</text>
+    <circle cx="102" cy="82" r="8" fill="#101522" stroke="rgba(80,180,255,0.5)" stroke-width="1"/>
+    <circle cx="102" cy="82" r="4" fill="#111"/>
   </g>
 
-  <!-- foot -->
-  <ellipse cx="46" cy="108" rx="9" ry="4" fill="#FF8C00" opacity="0.85"/>
-  <ellipse cx="62" cy="108" rx="9" ry="4" fill="#FF8C00" opacity="0.85"/>
+  <!-- shadow -->
+  <ellipse cx="60" cy="124" rx="27" ry="6" fill="url(#groundGlow)"/>
+
+  <!-- legs -->
+  <path d="M49 98 C47 108 45 114 43 118" stroke="#1f2433" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path d="M71 98 C73 108 75 114 77 118" stroke="#1f2433" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <ellipse cx="43" cy="119" rx="7" ry="3.8" fill="#121826"/>
+  <ellipse cx="77" cy="119" rx="7" ry="3.8" fill="#121826"/>
+  <path d="M40 118 H46 M74 118 H80" stroke="#34f5a8" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- left arm -->
+  <path d="M33 74 C22 70 16 58 14 48" stroke="#1f2433" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <circle cx="13" cy="47" r="5.5" fill="#34f5a8" filter="url(#softGlow)"/>
+
+  <!-- body -->
+  <circle cx="60" cy="68" r="34" fill="url(#orbBody)" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+  <ellipse cx="47" cy="51" rx="15" ry="11" fill="url(#orbShine)" transform="rotate(-22 47 51)"/>
+
+  <!-- visor -->
+  <path d="M38 62 C42 56 52 54 60 54 C68 54 78 56 82 62 C80 70 70 74 60 74 C50 74 40 70 38 62 Z" fill="#0a0e18" opacity="0.72"/>
+  <path d="M40 63 C44 58 52 56 60 56 C68 56 76 58 80 63" stroke="rgba(52,245,168,0.35)" stroke-width="1" fill="none"/>
+
+  <!-- eyes -->
+  <circle cx="51" cy="64" r="3.2" fill="#34f5a8"/>
+  <circle cx="52" cy="63" r="1.1" fill="#fff"/>
+  <path d="M67 64 H74" stroke="#34f5a8" stroke-width="2.4" stroke-linecap="round"/>
+
+  <!-- grin -->
+  <path d="M53 78 Q60 84 68 77" stroke="#34f5a8" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+
+  <!-- #1 tag -->
+  <g transform="translate(60 33)">
+    <rect x="-15" y="-7" width="30" height="14" rx="7" fill="#101522" stroke="#34f5a8" stroke-width="1.1"/>
+    <text x="0" y="4" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" font-weight="800" fill="#34f5a8">#1</text>
+  </g>
+
+  <!-- right arm + card -->
+  <path d="M87 75 C97 72 105 64 109 55" stroke="#1f2433" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <g transform="translate(95 40) rotate(14)">
+    <rect width="24" height="30" rx="4" fill="#101522" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+    <rect x="3" y="4" width="18" height="4" rx="2" fill="rgba(52,245,168,0.38)"/>
+    <rect x="3" y="11" width="14" height="3" rx="1.5" fill="rgba(255,255,255,0.08)"/>
+    <rect x="3" y="17" width="16" height="3" rx="1.5" fill="rgba(255,255,255,0.08)"/>
+    <rect x="3" y="23" width="11" height="3" rx="1.5" fill="rgba(255,255,255,0.08)"/>
+  </g>
+
+  <!-- sparks -->
+  <path d="M26 32 L28 26 L30 32 L36 34 L30 36 L28 42 L26 36 L20 34 Z" fill="#34f5a8" opacity="0.8"/>
+  <path d="M90 98 L91.5 94 L93 98 L97 99.5 L93 101 L91.5 105 L90 101 L86 99.5 Z" fill="#8b5cf6" opacity="0.85"/>
 </svg>
