@@ -76,35 +76,18 @@
     <text x="0" y="4" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" font-weight="800" fill="#34f5a8">#1</text>
   </g>
 
-  <!-- right arm + draft clipboard -->
-  <path d="M87 75 C97 72 105 64 109 54" stroke="#1f2433" stroke-width="4.5" stroke-linecap="round" fill="none"/>
-  <g transform="translate(86 28) rotate(10)">
-    <!-- clip -->
-    <rect x="11" y="0" width="18" height="9" rx="2.5" fill="#9aa3b5"/>
-    <rect x="13" y="2" width="14" height="6" rx="1.5" fill="#c9cdd8"/>
-    <rect x="17" y="3.5" width="6" height="3" rx="1" fill="#8b93a8"/>
-    <!-- paper -->
-    <rect x="4" y="7" width="32" height="40" rx="3" fill="#f4f6fa" stroke="#d8dde8" stroke-width="0.8"/>
-    <rect x="8" y="11" width="24" height="5" rx="1.5" fill="#101522"/>
-    <text x="20" y="15" text-anchor="middle" font-family="system-ui,sans-serif" font-size="3.6" font-weight="800" letter-spacing="0.08em" fill="#34f5a8">DRAFT</text>
-    <!-- pick rows -->
-    <rect x="8" y="19" width="24" height="7" rx="1.5" fill="rgba(52,245,168,0.22)" stroke="#34f5a8" stroke-width="0.6"/>
-    <circle cx="12.5" cy="22.5" r="2.2" fill="#34f5a8"/>
-    <text x="12.5" y="23.4" text-anchor="middle" font-family="system-ui,sans-serif" font-size="3.2" font-weight="800" fill="#0a0e18">1</text>
-    <rect x="16" y="20.8" width="14" height="2.2" rx="1" fill="rgba(52,245,168,0.35)"/>
-    <rect x="16" y="24.2" width="10" height="1.4" rx="0.7" fill="#c9cdd8"/>
-
-    <rect x="8" y="28" width="24" height="6" rx="1.5" fill="rgba(255,255,255,0.55)" stroke="#d8dde8" stroke-width="0.5"/>
-    <circle cx="12.5" cy="31" r="1.8" fill="#8b93a8"/>
-    <text x="12.5" y="31.8" text-anchor="middle" font-family="system-ui,sans-serif" font-size="2.8" font-weight="700" fill="#101522">2</text>
-    <rect x="16" y="29.5" width="12" height="1.4" rx="0.7" fill="#d8dde8"/>
-    <rect x="16" y="31.8" width="9" height="1.2" rx="0.6" fill="#e8ecf4"/>
-
-    <rect x="8" y="36" width="24" height="6" rx="1.5" fill="rgba(255,255,255,0.55)" stroke="#d8dde8" stroke-width="0.5"/>
-    <circle cx="12.5" cy="39" r="1.8" fill="#8b93a8"/>
-    <text x="12.5" y="39.8" text-anchor="middle" font-family="system-ui,sans-serif" font-size="2.8" font-weight="700" fill="#101522">3</text>
-    <rect x="16" y="37.5" width="11" height="1.4" rx="0.7" fill="#d8dde8"/>
-    <rect x="16" y="39.8" width="8" height="1.2" rx="0.6" fill="#e8ecf4"/>
+  <!-- right arm + #1 trophy -->
+  <path d="M87 75 C96 71 104 62 108 50" stroke="#1f2433" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <g transform="translate(90 26) rotate(8)">
+    <ellipse cx="16" cy="10" rx="11" ry="3.2" fill="#ffe082" stroke="#c9a020" stroke-width="0.8"/>
+    <path d="M7 10 C7 10 8 28 16 30 C24 28 25 10 25 10 Z" fill="url(#goldFace)" stroke="#c9a020" stroke-width="0.9" stroke-linejoin="round"/>
+    <path d="M5 14 C2 14 1.5 21 5 22" stroke="#c9a020" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M27 14 C30 14 30.5 21 27 22" stroke="#c9a020" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <path d="M11 12 L21 12 L19.5 24 L12.5 24 Z" fill="#f5c842" opacity="0.35"/>
+    <text x="16" y="22.5" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="900" fill="#5c4a12">#1</text>
+    <rect x="12" y="30" width="8" height="3.5" rx="1" fill="#c9a020"/>
+    <rect x="9" y="33.5" width="14" height="2.8" rx="1.2" fill="#9a7b18"/>
+    <ellipse cx="16" cy="34" rx="8" ry="1.2" fill="#ffe082" opacity="0.55"/>
   </g>
 
   <!-- sparks -->
