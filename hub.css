@@ -1035,6 +1035,71 @@ a.game-card:focus-visible .game-card-arrow {
   font-weight: 600;
 }
 
+/* ── 404 page ── */
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.error-page__inner {
+  text-align: center;
+  padding: var(--space-xl) 0;
+}
+
+.error-page__mascot {
+  display: block;
+  margin: 0 auto var(--space-lg);
+  filter: drop-shadow(0 12px 32px rgba(52, 245, 168, 0.15));
+}
+
+.error-page__lead {
+  max-width: 420px;
+  margin: 0 auto var(--space-lg);
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.error-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.error-page__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  background: var(--surface);
+  transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+
+.error-page__btn:hover {
+  border-color: rgba(52, 245, 168, 0.35);
+  background: var(--surface-hover);
+  color: var(--accent);
+}
+
+.error-page__btn--primary {
+  background: var(--accent-dim);
+  border-color: rgba(52, 245, 168, 0.35);
+  color: var(--accent);
+}
+
+.error-page__btn--primary:hover {
+  background: rgba(52, 245, 168, 0.18);
+  color: var(--text);
+}
+
 /* ── Responsive ── */
 @media (min-width: 640px) {
   .game-grid--live {

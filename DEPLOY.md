@@ -72,3 +72,22 @@ git push
 ```
 
 Netlify rebuilds automatically in ~30 seconds.
+
+---
+
+## Uptime monitoring (UptimeRobot — free)
+
+Get an email if the site goes down.
+
+1. Sign up at [uptimerobot.com](https://uptimerobot.com/signUp)
+2. **Add New Monitor**
+   - **Monitor Type:** HTTP(s)
+   - **Friendly Name:** Draft Games
+   - **URL:** `https://draftgames.net/`
+   - **Monitoring Interval:** 5 minutes (free tier)
+3. Add your **personal email** for alerts
+4. Save
+
+Optional second monitor for a game page, e.g. `https://draftgames.net/games/duck-draft-race/`
+
+Test the 404 page after deploy: `https://draftgames.net/this-page-does-not-exist`
