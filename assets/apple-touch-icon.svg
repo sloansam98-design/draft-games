@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Draft Games">
+  <defs>
+    <linearGradient id="g" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="55%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#34f5a8"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="180" rx="36" fill="#05070d"/>
+  <circle cx="90" cy="88" r="58" fill="url(#g)"/>
+  <ellipse cx="72" cy="72" rx="16" ry="12" fill="rgba(255,255,255,0.28)" transform="rotate(-22 72 72)"/>
+  <circle cx="72" cy="82" r="8" fill="#34f5a8"/>
+  <circle cx="74" cy="80" r="3" fill="#fff" opacity="0.85"/>
+  <path d="M96 82 H112" stroke="#34f5a8" stroke-width="7" stroke-linecap="round"/>
+  <path d="M78 102 Q90 114 104 100" stroke="#34f5a8" stroke-width="5" stroke-linecap="round" fill="none"/>
+</svg>
