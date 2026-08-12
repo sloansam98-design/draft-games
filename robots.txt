@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /games/water-gun-race/
 
 Sitemap: https://draftgames.net/sitemap.xml
